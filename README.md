@@ -19,5 +19,5 @@ Image
 
 ## Future
 - Count Success/Failed/Critical/Fumble
-- Group by Users (analyzed all log now)
+- Group by Users (Currently, analyzing all log)
 - UI and Color design (I have no sense😢)
