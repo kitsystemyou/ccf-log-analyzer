@@ -12,7 +12,7 @@ def log_analyze(content):
     content = [y.split(" ") for y in content]
     
     results = []
-    results = [[c[1], c[-3], c[-1]] for c in content] # キャラ名、出目、成功失敗
+    results = [[c[1], c[-3], c[-1]] for c in content if len(c)>=3] # キャラ名、出目、成功失敗
     nplist = np.array(results)
 
     for i in results: # 全角スペース削除

@@ -25,10 +25,6 @@ app = Flask(__name__)
 def hello():
     return "server is alive"
 
-# @app.route("/favicon.ico")
-# def favicon():
-#     return app.send_static_file("/static/favicon.ico")
-
 # トップページ
 @app.route("/index")
 def index():
@@ -42,7 +38,7 @@ def post():
         return render_template("index.html", raw_data=data)
     print(data)
     hist_data = parse.log_analyze(data)
-    print("hist", hist_data, type(hist_data[0]))
+    print("hist_data", hist_data)
     return render_template("index.html", raw_data=data, data=hist_data)
 
 
