@@ -18,7 +18,7 @@ from flask import Flask,render_template, request
 from flask.wrappers import Response
 from log_parse import parse
 
-#Flaskオブジェクトの生成
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -29,7 +29,6 @@ def hello():
 @app.route("/index")
 def index():
     return render_template("index.html")
-
 
 @app.route("/index", methods=["post"])
 def post():

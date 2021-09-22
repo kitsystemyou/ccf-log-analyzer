@@ -13,8 +13,8 @@
 - Open `xxx.html` in browser(Chrome, Firefox, IE...)
 - Copy log and paste in text box
 - Press `解析🌟` button
-- You get the histogram of your analyzed log (result of CCB~)
-Image
+- You get the histogram of your analyzed log (result of CCB~)  
+Image  
 ![image](./Doc/images/sample.png)
 
 ## Future
