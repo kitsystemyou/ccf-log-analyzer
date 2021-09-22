@@ -18,7 +18,7 @@ def log_analyze(content):
     for i in results: # 全角スペース削除
         i[0] = i[0].replace('\u3000', ' ')
 
-    print('total CBC:', len(results))
+    print('total CCB:', len(results))
 
     data = []
     for i in results:

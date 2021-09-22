@@ -15,7 +15,6 @@
 # [START gae_python38_app]
 # [START gae_python3_app]
 from flask import Flask,render_template, request
-from flask.wrappers import Response
 from log_parse import parse
 
 
