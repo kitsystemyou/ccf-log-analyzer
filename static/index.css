@@ -1,20 +1,20 @@
     body {
         margin: 0;
-        color: white;
+        color: #FFF7D6;
         font-family: 'Yu Gothic', 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
         font-size: 18px;
-        background-color: #791FFF;
+        background-color: #295358;
     }
     
     h1 {
-        color: #ffffff;
+        color: #FFF7D6;
         font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     }
     
     input {
-        color: #FFFFFF;
+        color: #FFF7D6;
         font-size: 30px;
-        background-color: #64DB8F;
+        background-color: #00BE96;
     }
     
     textarea {
@@ -23,7 +23,7 @@
     }
     
     .graph {
-        background-color: rgb(255, 255, 255);
+        background-color: white;
         margin: 3%;
         width: 65em;
     }
