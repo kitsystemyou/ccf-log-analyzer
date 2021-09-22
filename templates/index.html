@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<title>Log Analyzer 👾</title>
+
+<head>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+    <link rel="stylesheet" href="/static/index.css">
+    <center>
+        <h1>ココフォリア Log Analyzer [CoC]</h1>
+        CCB で出した出目の頻度を可視化します
+        <div>ココフォリアのログ(xxx.html)をブラウザで開いたものを↓にコピー&ペーストしてください</div>
+        <form action="/index" method="POST">
+            <textarea name="input_data" placeholder="(例)&#13;[メイン] 山田　太郎 : CCB<=80 【こぶし（パンチ）】 (1D100<=80) ＞ 96 ＞ 致命的失敗&#13;&#13;[メイン] 田中　花子 : CCB<=60 【目星】 (1D100<=60) ＞ 37 ＞ 成功 &#13;&#13;などのログ"
+             style="width:52em; height:10em"></textarea><br>
+            <input type="submit" value="解析🌟" style="width:35em; height:3em;">
+        </form>
+
+        <hr size="5">
+        <div class="graph">
+        <canvas id="myBarChart"></canvas>
+        <script>
+            var ctx = document.getElementById("myBarChart");
+            Chart.defaults.global.defaultFontColor = 'white';
+            var list_data = {{ data }}
+            var bin_max = Math.max(...list_data)
+            var myBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['0~10', '11~20', '21~30', '31~40', '41~50', '51~60', '61~70', '71~80', '81~90', '91~100'],
+                    datasets: [{
+                        label: '出目の出た回数',
+                        data: list_data,
+                        backgroundColor: "lawngreen",
+                        fontSize: '30',
+                    }, ]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'ダイスの女神のご機嫌',
+                        fontColor: 'rgb(220, 255, 20)',
+                        fontSize: 30,
+                    },
+                    scales: {
+                        yAxes: [{
+                          display: true,
+                            scaleLabel: {
+                              display: 'true',
+                            },
+                            ticks: {
+                                suggestedMax: bin_max,
+                                suggestedMin: 0,
+                                stepSize: 5,
+                                fontSize: 25,
+                                callback: function(value, index, values) {
+                                    return value + '回'
+                                }
+                            }
+                        }],
+                        xAxes: [{
+                          ticks: {
+                            fontSize: 30,
+                          }
+                        }]
+                    },
+                    legend: {
+                      labels: {
+                      fontColor: 'white',
+                      }
+                    }
+                }
+            });
+        </script>
+        </div>
+    </center>
+</body>
+
+</html>

@@ -1,0 +1,33 @@
+    body {
+        margin: 0;
+        color: white;
+        font-family: 'Yu Gothic', 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
+        font-size: 18px;
+        background-color: rgb(73, 50, 158);
+    }
+    
+    h1 {
+        color: cyan;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+    
+    input {
+        color: rgb(253, 2, 2);
+        font-size: 30px;
+        background-color: antiquewhite;
+    }
+    
+    textarea {
+        color: black;
+        font-size: 20px;
+    }
+    
+    .graph {
+        background-color: rgb(169, 196, 255);
+        margin: 3%;
+        width: 65em;
+    }
+    
+    dummy {
+        color: rgb(220, 255, 20)
+    }
