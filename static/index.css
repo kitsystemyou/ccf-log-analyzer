@@ -2,7 +2,7 @@
         margin: 0;
         color: #FFF7D6;
         font-family: 'Yu Gothic', 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
-        font-size: 18px;
+        font-size: 20px;
         background-color: #295358;
     }
     
@@ -11,21 +11,28 @@
         font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     }
     
-    input {
-        color: #FFF7D6;
-        font-size: 30px;
-        background-color: #00BE96;
+    .describe {
+        width: 70vw;
     }
     
     textarea {
         color: black;
-        font-size: 20px;
+        font-size: 1rem;
+        width: 70vw;
+        height: 10em;
+    }
+    
+    input {
+        color: #FFF7D6;
+        font-size: 1.15rem;
+        background-color: #00BE96;
+        width: 70.5vw;
+        height: 3em;
     }
     
     .graph {
         background-color: white;
-        margin: 3%;
-        width: 65em;
+        width: 70vw;
     }
     
     a {

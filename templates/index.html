@@ -12,12 +12,13 @@
     <link rel="stylesheet" href="/static/index.css">
     <center>
         <h1>ココフォリア Log Analyzer [CoC]</h1>
-        CCB で出した出目の頻度を可視化します
-        <div>ココフォリアのログ(xxx.html)をブラウザで開いたものを↓にコピー&ペーストしてください</div>
+        <div class="describe">
+        CCB で出した出目の頻度を可視化します<br>
+        ココフォリアのログ(xxx.html)をブラウザで開いたものを↓にコピー&ペーストしてください
+        </div>
         <form action="/index" method="POST">
-            <textarea name="input_data" placeholder="(例)&#13;[メイン] 山田　太郎 : CCB<=80 【こぶし（パンチ）】 (1D100<=80) ＞ 96 ＞ 致命的失敗&#13;&#13;[メイン] 田中　花子 : CCB<=60 【目星】 (1D100<=60) ＞ 37 ＞ 成功 &#13;&#13;などのログ"
-             style="width:52em; height:10em"></textarea><br>
-            <input type="submit" value="🌟 解 析 🌟" style="width:35em; height:3em;">
+            <textarea name="input_data" placeholder="(例)&#13;[メイン] 山田　太郎 : CCB<=80 【こぶし（パンチ）】 (1D100<=80) ＞ 96 ＞ 致命的失敗&#13;&#13;[メイン] 田中　花子 : CCB<=60 【目星】 (1D100<=60) ＞ 37 ＞ 成功 &#13;&#13;などのログ">{{ raw_data }}</textarea><br>
+            <input type="submit" value="🌟 解 析 🌟">
         </form>
 
         <hr size="5">
@@ -42,6 +43,9 @@
                     }, ]
                 },
                 options: {
+                    animation: {
+                      duration: 2000
+                    },
                     title: {
                         display: true,
                         text: 'ダイスの女神のご機嫌',
@@ -66,7 +70,7 @@
                         }],
                         xAxes: [{
                           ticks: {
-                            fontSize: 30,
+                            fontSize: 25,
                           }
                         }]
                     },
