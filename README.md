@@ -1,8 +1,8 @@
 # Log Analyzer 👾
 [Check here](https://singsignalyou-test.df.r.appspot.com/index)
 
-## Construct
-| バックエンド | フロントエンド                 | インフラ              | 
+## Technologies
+| Backend | Frontend                 | Infrastructure              | 
 | ------------ | ------------------------------ | --------------------- | 
 | Python       | jinja2 (and HTML, javascript, CSS) | Google Cloud Platform | 
 | Flask        | Chart.js                       | App Engine (Python)   | 
@@ -18,6 +18,6 @@ Image
 ![image](./Doc/images/sample.png)
 
 ## Future
-- count Success/Failed/Critical/Fumble
-- Group by Users (Now, analyzed all log)
-- UI, Color design (I have no sense😢)
+- Count Success/Failed/Critical/Fumble
+- Group by Users (Currently, analyzing all log)
+- UI and Color design (I have no sense😢)
