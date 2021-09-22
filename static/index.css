@@ -3,18 +3,18 @@
         color: white;
         font-family: 'Yu Gothic', 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
         font-size: 18px;
-        background-color: rgb(73, 50, 158);
+        background-color: #791FFF;
     }
     
     h1 {
-        color: cyan;
+        color: #ffffff;
         font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     }
     
     input {
-        color: rgb(253, 2, 2);
+        color: #FFFFFF;
         font-size: 30px;
-        background-color: antiquewhite;
+        background-color: #64DB8F;
     }
     
     textarea {
@@ -23,7 +23,7 @@
     }
     
     .graph {
-        background-color: rgb(169, 196, 255);
+        background-color: rgb(255, 255, 255);
         margin: 3%;
         width: 65em;
     }

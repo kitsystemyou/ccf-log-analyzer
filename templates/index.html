@@ -16,7 +16,7 @@
         <form action="/index" method="POST">
             <textarea name="input_data" placeholder="(例)&#13;[メイン] 山田　太郎 : CCB<=80 【こぶし（パンチ）】 (1D100<=80) ＞ 96 ＞ 致命的失敗&#13;&#13;[メイン] 田中　花子 : CCB<=60 【目星】 (1D100<=60) ＞ 37 ＞ 成功 &#13;&#13;などのログ"
              style="width:52em; height:10em"></textarea><br>
-            <input type="submit" value="解析🌟" style="width:35em; height:3em;">
+            <input type="submit" value="🌟 解 析 🌟" style="width:35em; height:3em;">
         </form>
 
         <hr size="5">
@@ -26,7 +26,7 @@
         <a href="https://github.com/kitsystemyou/ccf-log-analyzer" target="_blank">Github Repository</a>
         <script>
             var ctx = document.getElementById("myBarChart");
-            Chart.defaults.global.defaultFontColor = 'white';
+            Chart.defaults.global.defaultFontColor = 'black';
             var list_data = {{ data }}
             var bin_max = Math.max(...list_data)
             var myBarChart = new Chart(ctx, {
@@ -36,7 +36,7 @@
                     datasets: [{
                         label: '出目の出た回数',
                         data: list_data,
-                        backgroundColor: "lawngreen",
+                        backgroundColor: "#64DB8F",
                         fontSize: '30',
                     }, ]
                 },
@@ -44,7 +44,7 @@
                     title: {
                         display: true,
                         text: 'ダイスの女神のご機嫌',
-                        fontColor: 'rgb(220, 255, 20)',
+                        fontColor: '#791FFF',
                         fontSize: 30,
                     },
                     scales: {
@@ -71,7 +71,7 @@
                     },
                     legend: {
                       labels: {
-                      fontColor: 'white',
+                      fontColor: 'black',
                       }
                     }
                 }
