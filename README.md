@@ -2,7 +2,7 @@
 [Check here](https://singsignalyou-test.df.r.appspot.com/index)
 
 ## Construct
-| バックエンド | フロントエンド                 | インフラ              | 
+| Backend | Frontend                 | Infrastructure              | 
 | ------------ | ------------------------------ | --------------------- | 
 | Python       | jinja2 (and HTML, javascript, CSS) | Google Cloud Platform | 
 | Flask        | Chart.js                       | App Engine (Python)   | 
