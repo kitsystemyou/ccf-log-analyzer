@@ -15,8 +15,9 @@
 - Press `解析🌟` button
 - You get the histogram of your analyzed log (result of CCB~)
 Image
-![image](./Doc/images/unknown.png)
+![image](./Doc/images/sample.png)
 
 ## Future
+- count Success/Failed/Critical/Fumble
 - Group by Users (Now, analyzed all log)
 - UI, Color design (I have no sense😢)
