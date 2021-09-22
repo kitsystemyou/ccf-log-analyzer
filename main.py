@@ -14,15 +14,21 @@
 
 # [START gae_python38_app]
 # [START gae_python3_app]
-from flask import Flask,render_template, request
+from flask import Flask,render_template, request, send_from_directory
 from log_parse import parse
-
+import os
 
 app = Flask(__name__)
 
 @app.route("/")
 def hello():
     return "server is alive"
+
+# For iOS, iPadOS
+@app.route('/apple-touch-icon-precomposed.png')
+def fapple_touch_icon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'apple-touch-icon-precomposed.png', mimetype='image/vnd.microsoft.icon')
 
 # トップページ
 @app.route("/index")
