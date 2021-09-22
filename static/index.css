@@ -28,6 +28,10 @@
         width: 65em;
     }
     
+    a {
+        color: aquamarine;
+    }
+    
     dummy {
         color: rgb(220, 255, 20)
     }
