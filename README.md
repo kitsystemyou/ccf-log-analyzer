@@ -1,20 +1,21 @@
 # Log Analyzer 👾
-[here](https://singsignalyou-test.df.r.appspot.com/index)
+[Check here](https://singsignalyou-test.df.r.appspot.com/index)
 
 ## Construct
-- python
-  - flask
-  - jinja2
-- Chart.js
-- Google Cloud Platform
-  - App Engine
+| バックエンド | フロントエンド                 | インフラ              | 
+| ------------ | ------------------------------ | --------------------- | 
+| Python       | jinja2 (and HTML, javascript, CSS) | Google Cloud Platform | 
+| Flask        | Chart.js                       | App Engine (Python)   | 
+
 
 ## How to use
-- get log from cocofolia room
-- open `.html` in browser(Chrome, Firefox, IE...)
-- copy log and paste in text box
-- press `解析🌟` button
-- you get the histogram of your analyzed log (result of CCB~)
+- Get log from your cocofolia room
+- Open `xxx.html` in browser(Chrome, Firefox, IE...)
+- Copy log and paste in text box
+- Press `解析🌟` button
+- You get the histogram of your analyzed log (result of CCB~)
+Image
+![image](./Doc/images/unknown.png)
 
 ## Future
 - Group by Users (Now, analyzed all log)
