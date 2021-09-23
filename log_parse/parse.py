@@ -7,7 +7,7 @@ def log_split(content):
     content = content.replace("\r\n", "\n")
     content = content.replace("\r", "\n")
     content = content.split("\n")
-    content = [x for x in content if x != '' and 'CCB' in x]
+    content = [x for x in content if x != '' and ('CCB' in x  or 'ccb' in x or 'cc' in x)]
     content = [y.split(" ") for y in content]
     
     results = []
