@@ -3,8 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-
-def log_analyze(content):
+def log_split(content):
     content = content.replace("\r\n", "\n")
     content = content.replace("\r", "\n")
     content = content.split("\n")
@@ -13,11 +12,14 @@ def log_analyze(content):
     
     results = []
     results = [[c[1], c[-3], c[-1]] for c in content if len(c)>=3] # キャラ名、出目、成功失敗
-    nplist = np.array(results)
 
     for i in results: # 全角スペース削除
         i[0] = i[0].replace('\u3000', ' ')
 
+    return results
+
+#[[キャラ名、出目、成功失敗],…]となっているリストを渡すとlist(ヒストグラム)を返す関数
+def make_histogram(results):
     print('total CCB:', len(results))
 
     data = []
@@ -35,3 +37,11 @@ def log_analyze(content):
     nplist = np.array(intdata)
     hist_data, _ = np.histogram(nplist, bins=10)
     return list(hist_data)
+
+def log_analyze(content):
+    
+    results = log_split(content)
+
+    histogram_data = make_histogram(results)
+    return histogram_data
+
