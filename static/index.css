@@ -12,13 +12,17 @@
     }
     
     .describe {
-        width: 70vw;
+        width: 67vw;
+    }
+    
+    form {
+        width: 67vw;
     }
     
     textarea {
         color: black;
         font-size: 1rem;
-        width: 70vw;
+        width: 67vw;
         height: 10em;
     }
     
@@ -26,13 +30,13 @@
         color: #FFF7D6;
         font-size: 1.15rem;
         background-color: #00BE96;
-        width: 70.5vw;
+        width: 67.5vw;
         height: 3em;
     }
     
     .graph {
         background-color: white;
-        width: 70vw;
+        width: 67vw;
     }
     
     a {

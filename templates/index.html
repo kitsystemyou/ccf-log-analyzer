@@ -13,7 +13,7 @@
     <center>
         <h1>ココフォリア Log Analyzer [CoC]</h1>
         <div class="describe">
-        CCB(または ccb, CC, cc) で出した出目の頻度を可視化します。[<a href="https://github.com/kitsystemyou/ccf-log-analyzer/blob/main/Doc/markdown/usage.md" target="_blank">使い方などの詳細</a>
+        CCB(または ccb, CC, cc) で出した出目の頻度を可視化します。<br>[<a href="https://github.com/kitsystemyou/ccf-log-analyzer/blob/main/Doc/markdown/usage.md" target="_blank">使い方などの詳細</a>
         / <a href="https://github.com/kitsystemyou/ccf-log-analyzer/blob/main/Doc/markdown/update_log.md" target="_blank">更新履歴</a>]<br>
         ココフォリアのログ(xxx.html)をブラウザで開いたものを↓にコピー&ペーストしてください。
         </div>
@@ -25,7 +25,7 @@
         <hr size="5">
         <div class="graph">
         <canvas id="myBarChart"></canvas>
-        </center>
+    </center>
         <a href="https://github.com/kitsystemyou/ccf-log-analyzer" target="_blank">Github Repository</a>
         <script>
             var ctx = document.getElementById("myBarChart");
@@ -35,7 +35,7 @@
             var myBarChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['0~10', '11~20', '21~30', '31~40', '41~50', '51~60', '61~70', '71~80', '81~90', '91~100'],
+                    labels: ['1~10', '11~20', '21~30', '31~40', '41~50', '51~60', '61~70', '71~80', '81~90', '91~100'],
                     datasets: [{
                         label: '出目の出た回数',
                         data: list_data,
@@ -63,7 +63,7 @@
                                 suggestedMax: bin_max,
                                 suggestedMin: 0,
                                 stepSize: 5,
-                                fontSize: 25,
+                                fontSize: 23,
                                 callback: function(value, index, values) {
                                     return value + '回'
                                 }
@@ -71,7 +71,7 @@
                         }],
                         xAxes: [{
                           ticks: {
-                            fontSize: 25,
+                            fontSize: 20,
                           }
                         }]
                     },
