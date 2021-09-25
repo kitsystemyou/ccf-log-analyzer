@@ -6,6 +6,12 @@
         background-color: #295358;
     }
     
+    .twitter-timeline {
+        right: 0;
+        top: 0;
+        float: right;
+    }
+    
     h1 {
         color: #FFF7D6;
         font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
