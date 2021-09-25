@@ -40,7 +40,6 @@ def post():
     data = request.form["input_data"]
     if len(data)==0:
         return render_template("index.html", raw_data=data)
-    print(data)
     hist_data = parse.log_analyze(data)
     print("hist_data", hist_data)
     return render_template("index.html", raw_data=data, data=hist_data)
