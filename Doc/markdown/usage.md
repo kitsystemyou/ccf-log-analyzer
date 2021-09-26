@@ -1,4 +1,4 @@
-ご意見・ご要望ありましたら[こちら](https://forms.gle/UecN4MjSpGdssVGEA)までお願いいたします。
+ご意見・ご要望ありましたら[こちら](https://forms.gle/UecN4MjSpGdssVGEA) か [@log_analyzer_cf](https://twitter.com/log_analyzer_cf) までお願いいたします。
 
 # ココフォリア **Log Analyzer** の使い方
 ## ツール概要
