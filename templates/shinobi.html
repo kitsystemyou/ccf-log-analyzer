@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<title>Log Analyzer(shinobi) 👾</title>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  {# <link rel="apple-touch-icon" sizes="120x120" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+  <meta name="author" content="@log_analyzer_cf">
+  <meta name="description" content="ココフォリアのログを解析し、CCBなどで出した 1d100 の出目の頻度を可視化します。">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@log_analyzer_cf">
+  <meta property="og:title" content="ココフォリアのログ解析ツール(ForCoC)">
+  <meta property="og:description" content="ココフォリアのログを解析し、CCBなどで出した 1d100 の出目の頻度を可視化します。">
+  <meta property="og:image" content="https://singsignalyou-test.df.r.appspot.com/static/twitter_card.png"> #}
+</head>
+
+
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+    <link rel="stylesheet" href="/static/index.css">
+    <a class="twitter-timeline" data-width="13vw" data-height="25vw" data-theme="dark" href="https://twitter.com/log_analyzer_cf?ref_src=twsrc%5Etfw">Tweets by log_analyzer_cf</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <center>
+        <h1>ココフォリア Log Analyzer [シノビガミ] β</h1>
+        <div class="describe">
+        {# 2d6 で出した出目の頻度を可視化します。<br>[<a href="https://github.com/kitsystemyou/ccf-log-analyzer/blob/main/Doc/markdown/usage.md" target="_blank">使い方などの詳細</a>
+        / <a href="https://github.com/kitsystemyou/ccf-log-analyzer/blob/main/Doc/markdown/update_log.md" target="_blank">更新履歴</a>]<br> #}
+        ココフォリアのログ(xxx.html)をブラウザで開いたものを↓にコピー&ペーストしてください。
+        </div>
+        <form action="/shinobi" method="POST">
+            <textarea name="input_data" placeholder="(例)&#13;[メイン] 山田　太郎 : CCB<=80 【こぶし（パンチ）】 (1D100<=80) ＞ 96 ＞ 致命的失敗&#13;&#13;[メイン] 田中　花子 : CCB<=60 【目星】 (1D100<=60) ＞ 37 ＞ 成功 &#13;&#13;などのログ">{{ raw_data }}</textarea><br>
+            <input type="submit" value="🌟 解 析 🌟">
+        </form>
+
+        <hr size="5">
+        <div class="graph">
+        <canvas id="myBarChart"></canvas>
+    </center>
+        <a href="https://github.com/kitsystemyou/ccf-log-analyzer" target="_blank">Github Repository</a>
+        <script>
+            var ctx = document.getElementById("myBarChart");
+            Chart.defaults.global.defaultFontColor = 'black';
+            var list_data = {{ data }}
+            var bin_max = Math.max(...list_data)
+            var myBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['1~3', '4~6', '7~9', '10~12'],
+                    datasets: [{
+                        label: '出目の出た回数',
+                        data: list_data,
+                        backgroundColor: "#64DB8F",
+                        fontSize: '30',
+                    }, ]
+                },
+                options: {
+                    animation: {
+                      duration: 2000
+                    },
+                    title: {
+                        display: true,
+                        text: 'ダイスの女神のご機嫌',
+                        fontColor: '#00BE96',
+                        fontSize: 30,
+                    },
+                    scales: {
+                        yAxes: [{
+                          display: true,
+                            scaleLabel: {
+                              display: 'true',
+                            },
+                            ticks: {
+                                suggestedMax: bin_max,
+                                suggestedMin: 0,
+                                stepSize: 3,
+                                fontSize: 23,
+                                callback: function(value, index, values) {
+                                    return value + '回'
+                                }
+                            }
+                        }],
+                        xAxes: [{
+                          ticks: {
+                            fontSize: 20,
+                          }
+                        }]
+                    },
+                    legend: {
+                      labels: {
+                      fontColor: 'black',
+                      }
+                    }
+                }
+            });
+        </script>
+        </div>
+</body>
+
+</html>

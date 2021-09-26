@@ -15,7 +15,7 @@
 # [START gae_python38_app]
 # [START gae_python3_app]
 from flask import Flask,render_template, request, send_from_directory
-from log_parse import parse
+from log_parse import parse, shinobi
 import os
 
 app = Flask(__name__)
@@ -44,6 +44,19 @@ def post():
     print("hist_data", hist_data)
     return render_template("index.html", raw_data=data, data=hist_data)
 
+# シノビガミ
+@app.route("/shinobi")
+def shinobi_page():
+    return render_template("shinobi.html")
+
+@app.route("/shinobi", methods=["post"])
+def shinobi_post():
+    data = request.form["input_data"]
+    if len(data)==0:
+        return render_template("shinobi.html", raw_data=data)
+    hist_data = shinobi.log_analyze(data)
+    print("shinobi_hist_data", hist_data)
+    return render_template("shinobi.html", raw_data=data, data=hist_data)
 
 if __name__ == "__main__":
     app.run(port=8080,debug=True)
