@@ -12,10 +12,8 @@ def log_split(content):
 
     for i in content: # 全角スペース削除
         i[1] =i[1].replace('\u3000', ' ')
-        print(i)
 
     content = [[c[1], c[-3], c[-1]] for c in content if len(c)>=3] # キャラ名、出目、成功失敗
-    print(content)
 
     return content
 
