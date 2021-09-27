@@ -22,14 +22,10 @@ def log_split(content):
 def make_histogram(results):
     print('total CCB:', len(results))
 
-    data = []
-    for i in results:
-        data.append(i[1])
-
     intdata=[]
-    for d in data:
+    for d in results:
         try:
-            intdata.append(int(d)) # グラフ描画のためint変換
+            intdata.append(int(d[1])) # グラフ描画のためint変換
         except:
             print(d)
             print("error in maping str to int") # フォーマットに沿ってない例外を抹殺
