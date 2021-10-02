@@ -15,15 +15,13 @@ def log_split(content):
 
     results=[] # [[キャラ名, 出目, 成功失敗]]
     for c in content:
-        if len(c)>=3:
-            results.append([c[1], c[-3], c[-1]])
         if exits_ccb(c):
             pattern = '.*?(\d+).*' # 数字抽出用
             matched = re.match(pattern, c[-1])
             if matched != None: # 開発バージョンのココフォリアのフォーマットの場合
-                print("dev-version")
                 results.append([c[0], matched.group(1), c[-1][-3:-1]])
-                print(matched.group(1))
+        elif len(c)>=3:
+            results.append([c[1], c[-3], c[-1]])
     return results
 
 def exits_ccb(list):
@@ -44,7 +42,7 @@ def make_histogram(results):
         try:
             intdata.append(int(d[1])) # グラフ描画のためint変換
         except:
-            # print(d)
+            print(d)
             print("error in maping str to int") # フォーマットに沿ってない例外を抹殺
             continue
     nplist = np.array(intdata)
