@@ -21,6 +21,19 @@ def log_split(content):
 
     return content
 
+def split_user(results):
+    user_namelist = []
+    for i in results:
+        if not i[0] in user_namelist:
+            user_namelist.append(i[0])
+    results_user = []
+    for name in user_namelist:
+        result = []
+        for i in results:
+            if name in i:
+                result.append(i)
+        results_user.append(result)
+    return results_user,user_namelist
 
 #[[キャラ名、出目、成功失敗],…]となっているリストを渡すとlist(ヒストグラム)を返す関数
 def make_histogram(results):
@@ -50,25 +63,3 @@ def log_analyze(content):
     histogram_data = make_histogram(results)
     mydict["result"].insert(0,{"name":"全体","hist_data":histogram_data})
     return mydict
-def split_user(results):
-    user_namelist = []
-    for i in results:
-        if not i[0] in user_namelist:
-            user_namelist.append(i[0])
-    results_user = []
-    for name in user_namelist:
-        result = []
-        for i in results:
-            if name in i:
-                result.append(i)
-        results_user.append(result)
-    return results_user,user_namelist
-
-def log_user_analyze(content):
-    results = log_split(content)
-    results_user,user_namelist = split_user(results)
-    l = []
-    for data,name in zip(results_user,user_namelist):
-        mydict = {"name":name,"hist_data":make_histogram(data)}
-        l.append(mydict)
-    return l
