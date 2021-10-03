@@ -34,7 +34,6 @@ def exits_ccb(list):
 
 #[[キャラ名、出目、成功失敗],…]となっているリストを渡すとlist(ヒストグラム)を返す関数
 def make_histogram(results):
-    print(results)
     print('total CCB:', len(results))
 
     intdata=[]
@@ -42,7 +41,6 @@ def make_histogram(results):
         try:
             intdata.append(int(d[1])) # グラフ描画のためint変換
         except:
-            print(d)
             print("error in maping str to int") # フォーマットに沿ってない例外を抹殺
             continue
     nplist = np.array(intdata)
