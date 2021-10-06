@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-
+import re
 
 def log_split(content):
     content = content.replace("\r\n", "\n")
@@ -13,10 +13,24 @@ def log_split(content):
     for i in content: # 全角スペース削除
         i[1] =i[1].replace('\u3000', ' ')
 
-    content = [[c[1], c[-3], c[-1]] for c in content if len(c)>=3] # キャラ名、出目、成功失敗
+    results=[] # [[キャラ名, 出目, 成功失敗]]
+    for c in content:
+        if exits_ccb(c):
+            pattern = '.*?(\d+).*' # 数字抽出用
+            matched = re.match(pattern, c[-1])
+            if matched != None: # 開発バージョンのココフォリアのフォーマットの場合
+                results.append([c[0], matched.group(1), c[-1][-3:-1]])
+        elif len(c)>=3:
+            results.append([c[1], c[-3], c[-1]])
+    return results
 
-    return content
-
+def exits_ccb(list):
+    for l in list:
+        if 'ccb' in l:
+            return True
+        else:
+            continue
+    return False
 
 #[[キャラ名、出目、成功失敗],…]となっているリストを渡すとlist(ヒストグラム)を返す関数
 def make_histogram(results):
@@ -27,11 +41,10 @@ def make_histogram(results):
         try:
             intdata.append(int(d[1])) # グラフ描画のためint変換
         except:
-            print(d)
             print("error in maping str to int") # フォーマットに沿ってない例外を抹殺
             continue
     nplist = np.array(intdata)
-    hist_data, _ = np.histogram(nplist, bins=10)
+    hist_data, _ = np.histogram(nplist, bins=10, range=(1,100))
     return list(hist_data)
 
 
