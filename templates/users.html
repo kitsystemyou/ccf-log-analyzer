@@ -21,22 +21,22 @@
     <a class="twitter-timeline" data-width="13vw" data-height="25vw" data-theme="dark" href="https://twitter.com/log_analyzer_cf?ref_src=twsrc%5Etfw">Tweets by log_analyzer_cf</a>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <center>
-        <h1>ココフォリア Log Analyzer [CoC]</h1>
+        <h1>ココフォリア Log Analyzer [CoC](Beta)</h1>
         <div class="describe">
         CCB(または ccb, CC, cc) で出した出目の頻度を可視化します。<br>[<a href="https://github.com/kitsystemyou/ccf-log-analyzer/blob/main/Doc/markdown/usage.md" target="_blank">使い方などの詳細</a>
         / <a href="https://github.com/kitsystemyou/ccf-log-analyzer/blob/main/Doc/markdown/update_log.md" target="_blank">更新履歴</a>]<br>
         ココフォリアのログ(xxx.html)をブラウザで開いたものを↓にコピー&ペーストしてください。
         </div>
-        <form action="/index" method="POST">
+        <form action="/users" method="POST">
             <textarea name="input_data" placeholder="(例)&#13;[メイン] 山田　太郎 : CCB<=80 【こぶし（パンチ）】 (1D100<=80) ＞ 96 ＞ 致命的失敗&#13;&#13;[メイン] 田中　花子 : CCB<=60 【目星】 (1D100<=60) ＞ 37 ＞ 成功 &#13;&#13;などのログ">{{ raw_data }}</textarea><br>
             <input type="submit" value="🌟 解 析 🌟">
         </form>
 
         <hr size="5">
-        {{data}}
         <div class="graph">
         {% for i in data["result"] %}
         <canvas id="a{{loop.index}}"></canvas>
+        <hr size="3">
         {% endfor %}
     </center>
         <a href="https://github.com/kitsystemyou/ccf-log-analyzer" target="_blank">Github Repository</a>

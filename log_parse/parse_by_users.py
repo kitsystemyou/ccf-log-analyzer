@@ -48,7 +48,7 @@ def make_histogram(results):
             print("error in maping str to int") # フォーマットに沿ってない例外を抹殺
             continue
     nplist = np.array(intdata)
-    hist_data, _ = np.histogram(nplist, bins=10)
+    hist_data, _ = np.histogram(nplist, bins=10, range=(1,100))
     return list(hist_data)
 
 
