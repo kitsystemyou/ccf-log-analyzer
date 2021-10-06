@@ -15,7 +15,7 @@
 # [START gae_python38_app]
 # [START gae_python3_app]
 from flask import Flask,render_template, request, send_from_directory
-from log_parse import parse
+from log_parse import parse, parse_by_users
 import os
 
 app = Flask(__name__)
@@ -43,6 +43,21 @@ def post():
     hist_data = parse.log_analyze(data)
     print("hist_data", hist_data)
     return render_template("index.html", raw_data=data, data=hist_data)
+
+
+# ユーザー毎
+@app.route("/users")
+def users():
+    return render_template("users.html", data=[])
+
+@app.route("/users", methods=["post"])
+def users_post():
+    data = request.form["input_data"]
+    if len(data)==0:
+        return render_template("users.html", raw_data=data)
+    hist_data = parse_by_users.log_analyze(data)
+    print("usrs_hist_data", hist_data)
+    return render_template("users.html", raw_data=data, data=hist_data)
 
 
 if __name__ == "__main__":
