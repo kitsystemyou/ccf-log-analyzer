@@ -53,10 +53,14 @@ def users():
 @app.route("/users", methods=["post"])
 def users_post():
     data = request.form["input_data"]
-    if len(data)==0:
-        return render_template("users.html", raw_data=data)
+    try:
+        data
+        if len(data)==0:
+            return render_template("users.html", raw_data=data)
+    except: # 空のまま解析ボタンを押された場合
+        return render_template("users.html", data=[])
     hist_data = parse_by_users.log_analyze(data)
-    print("usrs_hist_data", hist_data)
+    print("users_hist_data", hist_data)
     return render_template("users.html", raw_data=data, data=hist_data)
 
 
