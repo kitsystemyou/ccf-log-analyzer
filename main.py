@@ -22,7 +22,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "server is alive"
+    return "google-site-verification: googledec24225c112a104.html"
 
 # For iOS, iPadOS
 @app.route('/apple-touch-icon-precomposed.png')
