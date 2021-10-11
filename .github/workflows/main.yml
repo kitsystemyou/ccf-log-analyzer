@@ -11,8 +11,7 @@ jobs:
         with:
           python-version: '3.8.7'
       - run: pip install -r requirements.txt
-      - run: cd ./Doc && ls
-      - run: mkdocs build
+      - run: cd ./Doc && mkdocs build
       
       # push builded files for gh-pages branch 
       - uses: peaceiris/actions-gh-pages@v3
