@@ -1,0 +1,45 @@
+# Project information
+site_name: ココフォリア Log Analyzer
+site_description: 'ココフォリア Log Analyzer'
+site_author: 'kit_systemyou'
+site_url: 'https://kitsystemyou.github.io/ccf-log-parse/'
+
+# Copyright
+copyright: 'Copyright (c) 2021'
+
+# Documentation and theme
+docs_dir: 'docs'
+theme: 'material'
+
+# Options
+extra:
+  palette:
+    primary: 'Green'
+    accent: 'Orange'
+  font:
+    text: 'Roboto'
+    code: 'Roboto Mono'
+  i18n:
+    prev: 'Previous'
+    next: 'Next'
+  author:
+    github: 'kitsystemyou'
+    twitter: 'log_analyzer_cf'
+
+# Extensions
+markdown_extensions:
+  - codehilite:
+        noclasses: true
+        pygments_style: colorful
+        linenums: true
+  - admonition
+  - fontawesome_markdown
+
+extra_css:
+  - "https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css"
+
+# pages
+pages:
+  - トップページ: 'index.md'
+  - 使い方 ✨: 'usage.md'
+  - 更新履歴: 'update_log.md'

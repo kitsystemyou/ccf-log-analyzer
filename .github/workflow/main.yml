@@ -1,0 +1,22 @@
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.7'
+      - run: pip install -r requirements.txt
+      - run: cd ./Doc
+      - run: mkdocs build
+      
+      # push builded files for gh-pages branch 
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PERSONAL_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./Doc/docs/site
