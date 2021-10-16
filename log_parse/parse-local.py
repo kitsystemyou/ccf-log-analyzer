@@ -13,13 +13,23 @@ def exits_ccb(list):
     return False
 
 content = []
-with open('log-dev-ver.txt') as f:
+with open('/home/minatosingull/ccfolia-log/dummy.log') as f:
     for line in f:
         line = line.rstrip()  # 改行文字削除
         content.append(line)
-
-content = [x for x in content if x != '' and 'ccb' in x]
+content = [x for x in content if x != '' and ('CCB' in x  or 'ccb' in x or 'CC' in x or 'cc' in x or 'RESB' in x or 'resb' in x)]
 content = [y.split(" ") for y in content]
+
+print("content", content)
+cf = {"critical":0, "fumble":0} # critical, fumble
+
+for c in content:
+    if '決定的成功' in c[-1]:
+        cf["critical"]+=1
+    if '致命的失敗' in c[-1]:
+        cf["fumble"]+=1
+
+print("critical/fumble", cf)
 
 results = []
 results = [[c[1], c[-3], c[-1]] for c in content] # キャラ名・出目、成功失敗
@@ -46,7 +56,7 @@ for i in results:
 
 intdata=[]
 for i, d in enumerate(data):
-    print(i, d)
+    # print(i, d)
     try:
         intdata.append(int(d)) # グラフ描画のためint変換
     except:
@@ -57,12 +67,12 @@ for i, d in enumerate(data):
 nplist = np.array(intdata)
 hist_data, bins = np.histogram(nplist, bins=10, range=(1,101))
 return_data = list(hist_data)
-print(return_data)
+# print(return_data)
 
-# グラフ描画
-df = pd.DataFrame(intdata)
-plt.figure()
-df.hist(bins=range(1,110,10))
-plt.title('Dice Histgram')
-plt.savefig('./hist_dev_ver.png')
-plt.close('all')
+# # グラフ描画
+# df = pd.DataFrame(intdata)
+# plt.figure()
+# df.hist(bins=range(1,110,10))
+# plt.title('Dice Histgram')
+# plt.savefig('./hist_dev_ver.png')
+# plt.close('all')
