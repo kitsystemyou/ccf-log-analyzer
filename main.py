@@ -33,14 +33,19 @@ def fapple_touch_icon():
 # トップページ
 @app.route("/index")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", cf={})
 
 @app.route("/index", methods=["post"])
 def post():
     data = request.form["input_data"]
     if len(data)==0:
-        return render_template("index.html", raw_data=data)
+        return render_template("index.html", raw_data=data, cf={})
     hist_data, cf = parse.log_analyze(data)
+    try :
+        cf
+    except:
+        alt_cf={"critical_percent":0, "fumble_percent":0, "total":0}
+        return render_template("index.html", raw_data=data, cf=alt_cf)
     print("hist_data", hist_data)
     return render_template("index.html", raw_data=data, data=hist_data, cf=cf)
 
