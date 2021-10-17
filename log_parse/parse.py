@@ -19,7 +19,7 @@ def log_split(content):
             pattern = '.*?(\d+).*' # 数字抽出用
             matched = re.match(pattern, c[-1])
             if matched != None: # 開発バージョンのココフォリアのフォーマットの場合
-                results.append([c[0], matched.group(1), c[-1][-3:-1]])
+                results.append([c[0], matched.group(1), c[-1][-3:-1]]) # TODO: クリファン判定できるようにする
         elif len(c)>=3:
             results.append([c[1], c[-3], c[-1]])
     return results
@@ -48,10 +48,23 @@ def make_histogram(results):
     return list(hist_data)
 
 
-def log_analyze(content):
-    
-    results = log_split(content)
+def critical_fumble(results):
+    cf = {"critical":0, "fumble":0} # critical, fumble
+    for r in results:
+        if '決定的成功' in r[-1] or 'Special'in r[-1]:
+            cf["critical"]+=1
+        if '致命的失敗' in r[-1] or 'Fumble'in r[-1]:
+            cf["fumble"]+=1
+    return cf
 
+
+def log_analyze(content):
+    results = log_split(content)
     histogram_data = make_histogram(results)
-    return histogram_data
+    cf_data = critical_fumble(results)
+    cf_data["critical_percent"]=int(100*cf_data["critical"]/len(results))
+    cf_data["fumble_percent"]=int(100*cf_data["fumble"]/len(results))
+    cf_data["total"]=len(results)
+    print("cf", cf_data)
+    return histogram_data, cf_data
 

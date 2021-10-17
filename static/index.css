@@ -41,6 +41,11 @@
         height: 3em;
     }
     
+    .crifum {
+        color: #FFF7D6;
+        font-size: 1.5rem;
+    }
+    
     .graph {
         background-color: white;
         width: 67vw;

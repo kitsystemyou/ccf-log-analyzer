@@ -41,7 +41,12 @@
         <hr size="5">
         <div class="graph">
         <canvas id="myBarChart"></canvas>
-    </center>
+        </center>
+        <center>
+          <a class = "crifum">クリティカル✨ <span style="color:red; font-size:2rem"> {{ cf["critical_percent"] }}% </span></a><br>
+          <a class = "crifum">ファンブル💀 <span style="color:#fe0084; font-size:2rem"> {{ cf["fumble_percent"] }}% </span></a><br>
+          <a class = "crifum">トータル📊 <span style="color:white; font-size:2rem"> {{ cf["total"] }}回 </span></a>
+        </center>
         <a href="https://github.com/kitsystemyou/ccf-log-analyzer" target="_blank">Github Repository</a>
         <script>
             var ctx = document.getElementById("myBarChart");
