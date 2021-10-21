@@ -52,9 +52,15 @@ def critical_fumble(results):
     cf = {"critical":0, "fumble":0} # critical, fumble
     for r in results:
         if '決定的成功' in r[-1] or 'Special'in r[-1]:
-            cf["critical"]+=1
+            cf["critical"] += 1
         if '致命的失敗' in r[-1] or 'Fumble'in r[-1]:
-            cf["fumble"]+=1
+            cf["fumble"] += 1
+    try:
+        (len(results)==0)
+        cf["critical_percent"] = int(100*cf["critical"]/len(results))
+        cf["fumble_percent"] = int(100*cf["fumble"]/len(results))
+    except:
+        return {}
     return cf
 
 
@@ -62,8 +68,6 @@ def log_analyze(content):
     results = log_split(content)
     histogram_data = make_histogram(results)
     cf_data = critical_fumble(results)
-    cf_data["critical_percent"]=int(100*cf_data["critical"]/len(results))
-    cf_data["fumble_percent"]=int(100*cf_data["fumble"]/len(results))
     cf_data["total"]=len(results)
     print("cf", cf_data)
     return histogram_data, cf_data
