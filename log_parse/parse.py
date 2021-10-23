@@ -71,7 +71,7 @@ def critical_fumble(results) -> dict:
     return cf
 
 
-def log_analyze(content) -> Union(list, dict):
+def log_analyze(content) -> Union[list, dict]:
     results = log_split(content)
     histogram_data = make_histogram(results)
     cf_data = critical_fumble(results)
