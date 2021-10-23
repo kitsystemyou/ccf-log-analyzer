@@ -1,9 +1,8 @@
-import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
 import re
+from typing import Union
 
-def log_split(content):
+def log_split(content) -> list:
     content = content.replace("\r\n", "\n")
     content = content.replace("\r", "\n")
     content = content.split("\n")
@@ -28,7 +27,7 @@ def log_split(content):
             results.append([c[1], c[-3], c[-1]])
     return results
 
-def exits_ccb(list):
+def exits_ccb(list) -> bool:
     for l in list:
         if 'ccb' in l:
             return True
@@ -37,7 +36,7 @@ def exits_ccb(list):
     return False
 
 #[[キャラ名、出目、成功失敗],…]となっているリストを渡すとlist(ヒストグラム)を返す関数
-def make_histogram(results):
+def make_histogram(results) -> list:
     print('total CCB:', len(results))
 
     intdata=[]
@@ -52,7 +51,7 @@ def make_histogram(results):
     return list(hist_data)
 
 
-def critical_fumble(results):
+def critical_fumble(results) -> dict:
     cf = {"critical":0, "fumble":0} # critical, fumble
     for r in results:
         if '決定的成功' in r[-1] or 'Special'in r[-1]:
@@ -68,7 +67,7 @@ def critical_fumble(results):
     return cf
 
 
-def log_analyze(content):
+def log_analyze(content) -> Union(list, dict):
     results = log_split(content)
     histogram_data = make_histogram(results)
     cf_data = critical_fumble(results)
