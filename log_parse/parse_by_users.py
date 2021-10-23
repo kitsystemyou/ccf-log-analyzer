@@ -14,8 +14,12 @@ def log_split(content):
     content = [x for x in content if x != '' and ('CCB' in x  or 'ccb' in x or 'CC' in x or 'cc' in x or 'RESB' in x or 'resb' in x)]
     content = [y.split(" ") for y in content]
 
-    for i in content: # 全角スペース削除
-        i[1] =i[1].replace('\u3000', ' ')
+    for i in content:  # 全角スペース削除
+        try:
+            i[1]
+            i[1] = i[1].replace('\u3000', ' ')
+        except:
+            continue
 
     content = [[c[1], c[-3], c[-1]] for c in content if len(c)>=3] # キャラ名、出目、成功失敗
 
