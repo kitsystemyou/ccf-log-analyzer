@@ -48,6 +48,13 @@
             var hist_data = {{i["hist_data"]}};
             var ctx = document.getElementById("a{{loop.index}}");
             Chart.defaults.global.defaultFontColor = 'black';
+            Chart.plugins.register({
+            beforeDraw: function(ch){
+              var ctx = ch.chart.ctx;
+              ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+              ctx.fillRect(0, 0, ch.chart.width, ch.chart.height);
+              }
+            });
             var list_data = hist_data
             var text = username
             var bin_max = Math.max(...list_data)
