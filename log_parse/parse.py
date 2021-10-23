@@ -11,7 +11,11 @@ def log_split(content):
     content = [y.split(" ") for y in content]
 
     for i in content: # 全角スペース削除
-        i[1] =i[1].replace('\u3000', ' ')
+        try:
+            i[1]
+            i[1] =i[1].replace('\u3000', ' ')
+        except:
+            continue
 
     results=[] # [[キャラ名, 出目, 成功失敗]]
     for c in content:
