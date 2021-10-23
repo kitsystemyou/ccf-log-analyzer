@@ -14,17 +14,20 @@
 
 # [START gae_python38_app]
 # [START gae_python3_app]
-from flask import Flask,render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory
 from log_parse import parse, parse_by_users
 import os
 
 app = Flask(__name__)
+
 
 @app.route("/")
 def hello():
     return render_template("googledec24225c112a104.html")
 
 # For iOS, iPadOS
+
+
 @app.route('/apple-touch-icon-precomposed.png')
 def fapple_touch_icon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
@@ -35,16 +38,17 @@ def fapple_touch_icon():
 def index():
     return render_template("index.html", cf={})
 
+
 @app.route("/index", methods=["post"])
 def post():
     data = request.form["input_data"]
-    if len(data)==0:
+    if len(data) == 0:
         return render_template("index.html", raw_data=data, cf={})
     hist_data, cf = parse.log_analyze(data)
-    try :
+    try:
         cf
     except:
-        alt_cf={"critical_percent":0, "fumble_percent":0, "total":0}
+        alt_cf = {"critical_percent": 0, "fumble_percent": 0, "total": 0}
         return render_template("index.html", raw_data=data, cf=alt_cf)
     print("hist_data", hist_data)
     return render_template("index.html", raw_data=data, data=hist_data, cf=cf)
@@ -55,14 +59,15 @@ def post():
 def users():
     return render_template("users.html", data=[])
 
+
 @app.route("/users", methods=["post"])
 def users_post():
     data = request.form["input_data"]
     try:
         data
-        if len(data)==0:
+        if len(data) == 0:
             return render_template("users.html", raw_data=data)
-    except: # 空のまま解析ボタンを押された場合
+    except:  # 空のまま解析ボタンを押された場合
         return render_template("users.html", data=[])
     hist_data = parse_by_users.log_analyze(data)
     print("users_hist_data", hist_data)
@@ -70,6 +75,6 @@ def users_post():
 
 
 if __name__ == "__main__":
-    app.run(port=8080,debug=True)
+    app.run(port=8080, debug=True)
 # [END gae_python3_app]
 # [END gae_python38_app]
