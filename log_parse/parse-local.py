@@ -34,8 +34,12 @@ print("critical/fumble", cf)
 results = []
 results = [[c[1], c[-3], c[-1]] for c in content] # キャラ名・出目、成功失敗
 
-for i in results: # 全角スペース削除
-    i[0] = i[0].replace('\u3000', ' ')
+for i in content: # 全角スペース削除
+    try:
+        i[1]
+        i[1] =i[1].replace('\u3000', ' ')
+    except:
+        continue
 
     results=[] # [[キャラ名, 出目, 成功失敗]]
 for c in content:
