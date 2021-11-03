@@ -46,6 +46,13 @@
         <script>
             var ctx = document.getElementById("myBarChart");
             Chart.defaults.global.defaultFontColor = 'black';
+            Chart.plugins.register({
+            beforeDraw: function(ch){
+            var ctx = ch.chart.ctx;
+            ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+            ctx.fillRect(0, 0, ch.chart.width, ch.chart.height);
+            }
+            });
             var list_data = {{ data }}
             var bin_max = Math.max(...list_data)
             var myBarChart = new Chart(ctx, {
@@ -98,8 +105,19 @@
                     }
                 }
             });
+            function chgImg(){
+              var png = myBarChart.toBase64Image()
+              var image = document.getElementById( "output" ) ;
+              image.src = png
+            }
         </script>
         </div>
+        <form>
+          <input type="button" value="画像表示" onclick="chgImg()">
+        </form>
+        <img id="output" src="">
+        <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text="テキスト">Tweet</a>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
 
 </html>
