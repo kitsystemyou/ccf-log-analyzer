@@ -7,9 +7,16 @@
     }
     
     .twitter-timeline {
+        width: 13vw;
+        height: 90vh;
         right: 0;
         top: 0;
         float: right;
+    }
+
+    iframe {
+        width: 13vw !important;
+        height: 90vh !important;
     }
     
     h1 {
