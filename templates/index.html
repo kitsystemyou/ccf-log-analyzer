@@ -23,6 +23,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
     <link rel="stylesheet" href="/static/index.css">
     <a class="twitter-timeline" data-width="13vw" data-height="90vh" data-theme="dark" href="https://twitter.com/log_analyzer_cf?ref_src=twsrc%5Etfw">Tweets by log_analyzer_cf</a>
+    <script>
+      //twitter-timeline の data-height を制御する部分
+      var windoewHeight = document.getElementsByClassName('twitter-timeline')[0];
+      windoewHeight.attributes[2].nodeValue = Math.ceil(window.innerHeight * 0.9)
+    </script>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <center>
         <h1>ココフォリア Log Analyzer [CoC]</h1>
@@ -49,11 +54,8 @@
         </div>
         </center>
         <a href="https://github.com/kitsystemyou/ccf-log-analyzer" target="_blank">Github Repository</a>
-        <script>
-            //twitter-timeline の data-height を制御する部分
-            var windoewHeight = document.getElementsByClassName('twitter-timeline')[0];
-            windoewHeight.attributes[2].nodeValue = Math.ceil(window.innerHeight * 0.9)
 
+        <script>
             var ctx = document.getElementById("myBarChart");
             Chart.defaults.global.defaultFontColor = 'black';
             Chart.plugins.register({
