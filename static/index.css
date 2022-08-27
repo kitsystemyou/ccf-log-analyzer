@@ -47,11 +47,22 @@
         width: 67.5vw;
         height: 3em;
     }
+
+    .crifums {
+        position: relative;
+        text-align: center;
+    }
     
     .crifum {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        -webkit-transform: translateX(-50%);
+        -ms-transform: translateX(-50%);
         color: #00BE96;
         font-size: 1.5rem;
         font-weight: 800;
+        margin-bottom: 16xp;
     }
     
     .graph {
