@@ -21,3 +21,7 @@ Image
 - Count All/Success/Failed/Critical/Fumble
 - Group by Users (Currently, analyzing all log)
 - UI and Color design (I have no sense😢)
+
+## Try to dev
+Open your browser ↓(Please copy & paste!)  
+`gitpod.io/#https://github.com/kitsystemyou/ccf-log-analyzer`
