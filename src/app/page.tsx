@@ -39,25 +39,25 @@ const SAMPLE_LOG = `<p style="color:#fef4f4;">
 
 <p style="color:#fef4f4;">
   <span> [other]</span>
-  <span> 小鳥遊 美桜</span> :
+  <span> 小鳥遊 小鳥</span> :
   <span>
-    1D100  (1D100) ＞ 30
+    CCB<=70 【聞き耳】 (1D100<=70) ＞ 1 ＞ 決定的成功
   </span>
 </p>
 
 <p style="color:#40ba8d;">
   <span> [other]</span>
-  <span> 柘本 湊</span> :
+  <span> 市　太郎</span> :
   <span>
-    1d100 (1D100) ＞ 13
+    CCB<=50 【回避】 (1D100<=50) ＞ 13 ＞ 成功
   </span>
 </p>
 
 <p style="color:#2b6442;">
   <span> [other]</span>
-  <span> 茅埜 芭怜</span> :
+  <span> 須磨　ゐる</span> :
   <span>
-    1d100 (1D100) ＞ 5
+    CC<=65 【心理学】 (1D100<=65) ＞ 5 ＞ 決定的成功
   </span>
 </p>`;
 
