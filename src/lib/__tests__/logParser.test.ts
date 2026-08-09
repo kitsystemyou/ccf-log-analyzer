@@ -27,6 +27,15 @@ describe('logParser Unit Tests', () => {
       expect(result?.resultText).toBe('成功');
     });
 
+    it('計算式付きダイスコマンド CCB<=(15*5) のログでキャラクター名を正確に判定すること', () => {
+      const line = '[メイン] 探索者A : CCB<=(15*5) 【目星】 (1D100<=75) ＞ 42 ＞ 成功';
+      const result = parseLogLine(line);
+      expect(result).not.toBeNull();
+      expect(result?.characterName).toBe('探索者A');
+      expect(result?.rollValue).toBe(42);
+      expect(result?.resultText).toBe('成功');
+    });
+
     it('HTMLタグを含んだココフォリアHTMLログ行を正しくパースすること', () => {
       const htmlLine = '<p style="color: #888888;">[メイン] 田中花子 : ccb&lt;=60 (1D100&lt;=60) ＞ 1 ＞ 決定的成功</p>';
       const result = parseLogLine(htmlLine);
@@ -83,7 +92,7 @@ describe('logParser Unit Tests', () => {
 <html>
 <body>
 <p style="color: #888888;">[メイン] プレイヤーA : CCB&lt;=80 (1D100&lt;=80) ＞ 15 ＞ 成功</p>
-<p style="color: #888888;">[メイン] プレイヤーB : CCB&lt;=50 (1D100&lt;=50) ＞ 99 ＞ 致命的失敗</p>
+<p style="color: #888888;">[メイン] プレイヤーB : CCB&lt;=(20*4) (1D100&lt;=80) ＞ 99 ＞ 致命的失敗</p>
 </body>
 </html>
       `;

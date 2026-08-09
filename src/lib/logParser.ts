@@ -26,7 +26,7 @@ export interface AnalyzeResult {
 }
 
 /**
- * サニタイズ処理（タグ削除・削り）を行わず、エンティティデコードのみ適用
+ * サニタイズ処理（文字列削り）を行わず、表示用エンティティデコードのみ適用
  */
 export function cleanHtmlLine(rawLine: string): string {
   let cleaned = rawLine;
@@ -47,9 +47,9 @@ export function parseLogLine(line: string): ParseResult | null {
   const cleaned = cleanHtmlLine(line);
   if (!cleaned) return null;
 
-  // CCB, ccb, CC, cc, RESB, resb を含んでいるか確認
-  const hasDiceKeyword = /(?:CCB|ccb|CC|cc|RESB|resb)/i.test(cleaned);
-  if (!hasDiceKeyword) return null;
+  // CCB, ccb, CC, cc, RESB, resb などのダイスコマンド位置を特定
+  const diceSearch = cleaned.search(/(?:CCB|ccb|CC|cc|RESB|resb)/i);
+  if (diceSearch === -1) return null;
 
   // 全角スペースを半角に変換
   const normalized = cleaned.replace(/\u3000/g, ' ');
@@ -62,29 +62,23 @@ export function parseLogLine(line: string): ParseResult | null {
   if (isNaN(rollValue)) return null;
 
   let resultText = rollMatch[2] ? rollMatch[2].trim() : '';
-  // HTMLタグが末尾に残っている場合は閉じたタグのみ取り除く (例: 成功</p> -> 成功)
+  // HTMLタグが末尾に残っている場合は閉じたタグを取り除く (例: 成功</p> -> 成功)
   resultText = resultText.replace(/<\/[^>]+>$/g, '').trim();
 
-  // キャラクター名抽出: ダイス判定 [＞>] よりも左側にあるコロン ':' と名前を特定
+  // キャラクター名の抽出:
+  // ダイスコマンド (CCB/ccb/CC/cc/RESB/resb) より前の領域からコロン ':' の前にある名前を正確に特定
   let characterName = '不明';
+  const beforeDice = normalized.substring(0, diceSearch);
+  const lastColonIndex = beforeDice.lastIndexOf(':');
+  const namePart = lastColonIndex !== -1 ? beforeDice.substring(0, lastColonIndex) : beforeDice;
 
-  // [メイン] または <span...> などに囲まれたキャラ名とコロンのパターンにマッチ
-  const nameMatch = normalized.match(/(?:\[.*?\]\s*|<[^>]*>)*\s*([^\:<>\n]+?)\s*:\s*.*?[＞>]/);
-  if (nameMatch && nameMatch[1].trim()) {
-    characterName = nameMatch[1].replace(/<[^>]*>/g, '').trim();
-  } else {
-    // フォールバック
-    const tokens = normalized.split(/\s+/).filter(Boolean);
-    if (tokens.length >= 3) {
-      let charName = tokens[0];
-      if (tokens[0].startsWith('[') && tokens[0].endsWith(']') && tokens.length > 1) {
-        charName = tokens[1];
-      }
-      characterName = charName.replace(/<[^>]*>/g, '').trim();
-    }
+  // HTMLタグ <...> および チャンネル表記 [...] を除去して純粋なキャラ名を取得
+  const strippedName = namePart.replace(/<[^>]*>/g, '').replace(/\[.*?\]/g, '').trim();
+  if (strippedName) {
+    characterName = strippedName;
   }
 
-  return { characterName: characterName || '不明', rollValue, resultText };
+  return { characterName, rollValue, resultText };
 }
 
 /**
