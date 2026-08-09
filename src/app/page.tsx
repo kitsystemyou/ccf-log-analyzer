@@ -6,7 +6,6 @@ import { HistogramChart } from '@/components/HistogramChart';
 import { StatCard } from '@/components/StatCard';
 import {
   Dice5,
-  Play,
   Users,
   BarChart2,
   Github,
@@ -70,20 +69,19 @@ export default function Home() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAnalyze = () => {
-    if (!inputText.trim()) {
+  const updateLogData = (text: string) => {
+    setInputText(text);
+    if (!text.trim()) {
       setResult(null);
       return;
     }
-    const res = analyzeLog(inputText);
+    const res = analyzeLog(text);
     setResult(res);
   };
 
   const handleLoadSample = () => {
-    setInputText(SAMPLE_LOG);
     setFileName('sample_cocofolia_log.html');
-    const res = analyzeLog(SAMPLE_LOG);
-    setResult(res);
+    updateLogData(SAMPLE_LOG);
   };
 
   const handleClear = () => {
@@ -98,10 +96,8 @@ export default function Home() {
   const processFile = async (file: File) => {
     try {
       const text = await file.text();
-      setInputText(text);
       setFileName(file.name);
-      const res = analyzeLog(text);
-      setResult(res);
+      updateLogData(text);
     } catch (err) {
       console.error('File read error:', err);
     }
@@ -261,7 +257,7 @@ export default function Home() {
 
             <textarea
               value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
+              onChange={(e) => updateLogData(e.target.value)}
               placeholder={`【HTMLファイルをドラッグ＆ドロップ】または【上のアップロードボタン】を選択してください。\n\n(HTMLログ形式の例)\n<p style="color:#fef4f4;">\n  <span> [main]</span>\n  <span> 山田 太郎</span> :\n  <span> CCB<=80 (1D100<=80) ＞ 37 ＞ 成功 </span>\n</p>`}
               className="w-full h-48 bg-slate-950/80 border border-purple-500/20 rounded-2xl p-4 text-slate-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-teal-400/50 focus:border-teal-400/50 transition-all resize-y"
             />
@@ -273,15 +269,6 @@ export default function Home() {
               </div>
             )}
           </div>
-
-          <button
-            type="button"
-            onClick={handleAnalyze}
-            className="w-full py-4 bg-gradient-to-r from-teal-400 via-purple-600 to-rose-600 hover:from-teal-300 hover:via-purple-500 hover:to-rose-500 text-slate-950 font-black rounded-2xl shadow-xl shadow-teal-500/10 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2 text-base tracking-wider"
-          >
-            <Play className="w-5 h-5 fill-slate-950" />
-            🌟 解 析 を 開 始 🌟
-          </button>
         </section>
 
         {/* Results Section */}
