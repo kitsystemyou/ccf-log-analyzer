@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Eldritch Cthulhu Mythos Theme Palette */
+  --background: #040711;
+  --surface: #0b1329;
+  --foreground: #f1f5f9;
+  --primary-glow: #00f5d4;
+  --secondary-glow: #a855f7;
+  --madness-pink: #f43f5e;
+  --eldritch-gold: #fbbf24;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(0, 245, 212, 0.05) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(4, 7, 17, 0.8) 0%, #040711 100%);
+  background-attachment: fixed;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  min-height: 100vh;
+}
+
+/* Glassmorphism with Eldritch Void Aesthetics */
+.glass-panel {
+  background: rgba(11, 19, 41, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 245, 212, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(0, 245, 212, 0.03);
+}
+
+.glass-card {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(168, 85, 247, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  border-color: rgba(0, 245, 212, 0.35);
+  box-shadow: 0 12px 30px -5px rgba(0, 245, 212, 0.15), 0 0 15px rgba(168, 85, 247, 0.2);
+}
+
+/* Gradient Typography */
+.gradient-title {
+  background: linear-gradient(135deg, #00f5d4 0%, #a855f7 50%, #f43f5e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgba(0, 245, 212, 0.2));
+}
+
+.gradient-eldritch {
+  background: linear-gradient(135deg, #fbbf24 0%, #34d399 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-madness {
+  background: linear-gradient(135deg, #f43f5e 0%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Eldritch Glowing Effects */
+.glow-emerald {
+  box-shadow: 0 0 20px rgba(0, 245, 212, 0.25);
+}
+
+.glow-purple {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
+}
+
+.glow-crimson {
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.25);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #040711;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border: 1px solid rgba(0, 245, 212, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00f5d4;
+}
