@@ -36,6 +36,20 @@ describe('logParser Unit Tests', () => {
       expect(result?.resultText).toBe('成功');
     });
 
+    it('改行入り HTML ココフォリアログの要素からキャラクター名と出目を正確に判定すること', () => {
+      const block = `<p style="color:#fef4f4;">
+  <span> [other]</span>
+  <span> 小鳥遊 美桜</span> :
+  <span>
+    1D100  (1D100) ＞ 30
+  </span>
+</p>`;
+      const result = parseLogLine(block);
+      expect(result).not.toBeNull();
+      expect(result?.characterName).toBe('小鳥遊 美桜');
+      expect(result?.rollValue).toBe(30);
+    });
+
     it('HTMLタグを含んだココフォリアHTMLログ行を正しくパースすること', () => {
       const htmlLine = '<p style="color: #888888;">[メイン] 田中花子 : ccb&lt;=60 (1D100&lt;=60) ＞ 1 ＞ 決定的成功</p>';
       const result = parseLogLine(htmlLine);
@@ -71,6 +85,44 @@ describe('logParser Unit Tests', () => {
   });
 
   describe('logSplit', () => {
+    it('改行区切りの複数行 HTML ココフォリアログを完全にパースして各探索者の出目を抽出すること', () => {
+      const multilineHtmlLog = `
+<p style="color:#fef4f4;">
+  <span> [other]</span>
+  <span> 小鳥遊 美桜</span> :
+  <span>
+    1D100  (1D100) ＞ 30
+  </span>
+</p>
+
+<p style="color:#40ba8d;">
+  <span> [other]</span>
+  <span>柘本 湊</span> :
+  <span>
+    1d100 (1D100) ＞ 13
+  </span>
+</p>
+
+<p style="color:#2b6442;">
+  <span> [other]</span>
+  <span>茅埜 芭怜</span> :
+  <span>
+    1d100 (1D100) ＞ 5
+  </span>
+</p>
+      `;
+      const results = logSplit(multilineHtmlLog);
+      expect(results.length).toBe(3);
+      expect(results[0].characterName).toBe('小鳥遊 美桜');
+      expect(results[0].rollValue).toBe(30);
+
+      expect(results[1].characterName).toBe('柘本 湊');
+      expect(results[1].rollValue).toBe(13);
+
+      expect(results[2].characterName).toBe('茅埜 芭怜');
+      expect(results[2].rollValue).toBe(5);
+    });
+
     it('複数行のログからCCBコマンドのみ抽出しパースすること', () => {
       const sampleLog = `
 [メイン] 山田　太郎 : よろしくお願いします

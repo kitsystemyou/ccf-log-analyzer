@@ -41,32 +41,37 @@ export function cleanHtmlLine(rawLine: string): string {
 }
 
 /**
- * ココフォリアログの行から情報を抽出する
+ * ココフォリアログの行またはHTMLブロックから情報を抽出する
  */
 export function parseLogLine(line: string): ParseResult | null {
   const cleaned = cleanHtmlLine(line);
   if (!cleaned) return null;
 
-  // CCB, ccb, CC, cc, RESB, resb などのダイスコマンド位置を特定
-  const diceSearch = cleaned.search(/(?:CCB|ccb|CC|cc|RESB|resb)/i);
+  // 全角スペースを半角に変換し、改行や複数連続空白を1つの半角スペースに統合
+  const normalized = cleaned
+    .replace(/\r\n/g, ' ')
+    .replace(/\r/g, ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\u3000/g, ' ')
+    .replace(/\s+/g, ' ');
+
+  // 1D100, 1d100, CCB, ccb, CC, cc, RESB, resb などのダイスコマンド判定
+  const diceSearch = normalized.search(/(?:1D100|1d100|\b\d+D\d+\b|CCB|ccb|CC|cc|RESB|resb)/i);
   if (diceSearch === -1) return null;
 
-  // 全角スペースを半角に変換
-  const normalized = cleaned.replace(/\u3000/g, ' ');
-
-  // ダイス結果（ ＞ 出目 ＞ 結果 ）が末尾に含まれるか判定
-  const rollMatch = normalized.match(/[＞>]\s*(\d+)\s*(?:[＞>]\s*(.*))?$/);
+  // ダイス結果（ ＞ 出目 ＞ 結果 または ＞ 出目 ）が末尾に含まれるか判定
+  const rollMatch = normalized.match(/[＞>]\s*(\d+)\s*(?:[＞>]\s*(.*?))?(?:<\/p>|<[^>]*>|\s)*$/i);
   if (!rollMatch) return null;
 
   const rollValue = parseInt(rollMatch[1], 10);
   if (isNaN(rollValue)) return null;
 
   let resultText = rollMatch[2] ? rollMatch[2].trim() : '';
-  // HTMLタグが末尾に残っている場合は閉じたタグを取り除く (例: 成功</p> -> 成功)
-  resultText = resultText.replace(/<\/[^>]+>$/g, '').trim();
+  // HTMLタグが末尾に残っている場合は閉じたタグを取り除く
+  resultText = resultText.replace(/<\/[^>]+>$/g, '').replace(/<[^>]*>/g, '').trim();
 
   // キャラクター名の抽出:
-  // ダイスコマンド (CCB/ccb/CC/cc/RESB/resb) より前の領域からコロン ':' の前にある名前を正確に特定
+  // ダイスコマンド (1D100/1d100/CCB/ccb/CC/cc/RESB/resb) より前の領域からコロン ':' の前にある名前を正確に特定
   let characterName = '不明';
   const beforeDice = normalized.substring(0, diceSearch);
   const lastColonIndex = beforeDice.lastIndexOf(':');
@@ -78,18 +83,34 @@ export function parseLogLine(line: string): ParseResult | null {
     characterName = strippedName;
   }
 
-  return { characterName, rollValue, resultText };
+  return { characterName: characterName || '不明', rollValue, resultText };
+}
+
+/**
+ * ログ全体をブロック分割 (<p>...</p> タグがある場合はその単位、無ければ改行分割)
+ */
+export function extractLogBlocks(content: string): string[] {
+  // <p[\s\S]*?<\/p> パターンがあるか確認
+  const pTagRegex = /<p[\s\S]*?<\/p>/gi;
+  const pMatches = content.match(pTagRegex);
+
+  if (pMatches && pMatches.length > 0) {
+    return pMatches;
+  }
+
+  // <p> タグが無い平文ログの場合は改行分割
+  return content.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
 }
 
 /**
  * ログ全体を分割・パース
  */
 export function logSplit(content: string): ParseResult[] {
-  const lines = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+  const blocks = extractLogBlocks(content);
   const results: ParseResult[] = [];
 
-  for (const line of lines) {
-    const parsed = parseLogLine(line);
+  for (const block of blocks) {
+    const parsed = parseLogLine(block);
     if (parsed) {
       results.push(parsed);
     }
