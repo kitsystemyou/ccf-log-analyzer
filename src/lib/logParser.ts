@@ -26,18 +26,37 @@ export interface AnalyzeResult {
 }
 
 /**
+ * HTMLエンティティのデコードおよびHTMLタグの除去
+ * 注意: < 記号としての &lt; をタグと誤認しないよう、先にHTMLタグを除去してからデコードする
+ */
+export function cleanHtmlLine(rawLine: string): string {
+  let cleaned = rawLine;
+  // 1. まずHTMLタグを除去
+  cleaned = cleaned.replace(/<[^>]*>/g, '');
+  // 2. その後、HTMLエンティティをデコード
+  cleaned = cleaned
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+  return cleaned.trim();
+}
+
+/**
  * ココフォリアログの行から情報を抽出する
  */
 export function parseLogLine(line: string): ParseResult | null {
-  const trimmed = line.trim();
-  if (!trimmed) return null;
+  const cleaned = cleanHtmlLine(line);
+  if (!cleaned) return null;
 
   // CCB, ccb, CC, cc, RESB, resb を含んでいるか確認
-  const hasDiceKeyword = /(?:CCB|ccb|CC|cc|RESB|resb)/i.test(trimmed);
+  const hasDiceKeyword = /(?:CCB|ccb|CC|cc|RESB|resb)/i.test(cleaned);
   if (!hasDiceKeyword) return null;
 
   // 全角スペースを半角に変換
-  const normalized = trimmed.replace(/\u3000/g, ' ');
+  const normalized = cleaned.replace(/\u3000/g, ' ');
 
   // 正規表現パターン 1: [メイン] キャラ名 : コマンド ＞ 出目 ＞ 結果
   // 例: [メイン] 山田 太郎 : CCB<=80 【目星】 (1D100<=80) ＞ 37 ＞ 成功
@@ -51,10 +70,9 @@ export function parseLogLine(line: string): ParseResult | null {
     }
   }
 
-  // 互換フォールバック: 単純なスペース分割処理 (Python版の log_split 準拠)
+  // 互換フォールバック: 単純なスペース分割処理
   const tokens = normalized.split(/\s+/).filter(Boolean);
   if (tokens.length >= 3) {
-    // 例: [メイン] キャラ名 ... 出目 結果
     let charName = tokens[0];
     if (tokens[0].startsWith('[') && tokens[0].endsWith(']') && tokens.length > 1) {
       charName = tokens[1];
@@ -76,7 +94,7 @@ export function parseLogLine(line: string): ParseResult | null {
 }
 
 /**
- * ログ全体を分割・パース
+ * ログ全体を分割・パース (HTMLログファイルおよびプレーンテキスト両対応)
  */
 export function logSplit(content: string): ParseResult[] {
   const lines = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
@@ -94,7 +112,6 @@ export function logSplit(content: string): ParseResult[] {
 
 /**
  * 1~100 の出目結果を 10 個のビンに分類してヒストグラムを作成
- * ビン: [1-10, 11-20, 21-30, 31-40, 41-50, 51-60, 61-70, 71-80, 81-90, 91-100]
  */
 export function makeHistogram(results: ParseResult[]): number[] {
   const histogram = new Array(10).fill(0);

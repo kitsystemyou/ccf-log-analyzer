@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { analyzeLog, AnalyzeResult } from '@/lib/logParser';
 import { HistogramChart } from '@/components/HistogramChart';
 import { StatCard } from '@/components/StatCard';
@@ -17,11 +17,14 @@ import {
   Eye,
   BookOpen,
   Sparkles,
+  Upload,
+  FileCode,
+  CheckCircle2,
 } from 'lucide-react';
 
 const SAMPLE_LOG = `[メイン] 山田　太郎 : CCB<=80 【こぶし（パンチ）】 (1D100<=80) ＞ 37 ＞ 成功
 [メイン] 田中　花子 : CCB<=60 【目星】 (1D100<=60) ＞ 96 ＞ 致命的失敗
-[メイン] 佐藤{0} : CCB<=70 【SANチェック】 (1D100<=70) ＞ 1 ＞ 決定的成功
+[メイン] 佐藤　一郎 : CCB<=70 【SANチェック】 (1D100<=70) ＞ 1 ＞ 決定的成功
 [メイン] 山田　太郎 : CCB<=50 【回避】 (1D100<=50) ＞ 42 ＞ 成功
 [メイン] 田中　花子 : CCB<=75 【図書館】 (1D100<=75) ＞ 12 ＞ 成功
 [メイン] 佐藤　一郎 : CCB<=65 【心理学】 (1D100<=65) ＞ 88 ＞ 失敗
@@ -32,6 +35,10 @@ export default function Home() {
   const [inputText, setInputText] = useState('');
   const [result, setResult] = useState<AnalyzeResult | null>(null);
   const [activeTab, setActiveTab] = useState<'overall' | 'users'>('overall');
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAnalyze = () => {
     if (!inputText.trim()) {
@@ -44,17 +51,69 @@ export default function Home() {
 
   const handleLoadSample = () => {
     setInputText(SAMPLE_LOG);
+    setFileName('sample_log.txt');
     const res = analyzeLog(SAMPLE_LOG);
     setResult(res);
   };
 
   const handleClear = () => {
     setInputText('');
+    setFileName(null);
     setResult(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const processFile = async (file: File) => {
+    try {
+      const text = await file.text();
+      setInputText(text);
+      setFileName(file.name);
+      const res = analyzeLog(text);
+      setResult(res);
+    } catch (err) {
+      console.error('File read error:', err);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      processFile(files[0]);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      processFile(files[0]);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#040711] text-slate-100 flex flex-col justify-between selection:bg-teal-500 selection:text-slate-950">
+      {/* Hidden File Input */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept=".html,.htm,.txt"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+
       {/* Header */}
       <header className="border-b border-teal-500/20 bg-slate-950/70 backdrop-blur-xl sticky top-0 z-50 shadow-lg shadow-teal-950/20">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -102,27 +161,39 @@ export default function Home() {
             狂気と幸運のダイス出目を可視化
           </h2>
           <p className="text-slate-400 text-sm leading-relaxed">
-            ココフォリアのチャットログを貼り付けることで、1D100 / CCB判定の出目分布、決定的成功（クリティカル）、致命的失敗（ファンブル）のパーセンテージを深海エルドリッチグラフィックで視覚化します。
+            ココフォリアのチャットログ（HTMLファイルまたはテキスト）をアップロード・ペーストすることで、1D100 / CCB判定の出目分布、決定的成功（クリティカル）、致命的失敗（ファンブル）のパーセンテージを深海エルドリッチグラフィックで視覚化します。
           </p>
         </section>
 
         {/* Input Form Section */}
-        <section className="glass-panel rounded-3xl p-6 shadow-2xl space-y-4 border border-teal-500/20">
+        <section className="glass-panel rounded-3xl p-6 shadow-2xl space-y-5 border border-teal-500/20">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <label className="text-sm font-bold text-slate-200 flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-teal-400" />
-              ココフォリアログ（.html をブラウザで開いたテキスト）
+              ココフォリアログ（.html ファイルまたはテキスト）
             </label>
-            <div className="flex items-center gap-2">
+
+            <div className="flex items-center gap-2 flex-wrap">
+              {/* File Upload Button */}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="text-xs bg-gradient-to-r from-teal-500/20 to-purple-500/20 hover:from-teal-500/30 hover:to-purple-500/30 text-teal-300 px-3.5 py-1.5 rounded-xl border border-teal-400/40 transition-all flex items-center gap-1.5 font-bold shadow-md shadow-teal-500/10"
+              >
+                <Upload className="w-3.5 h-3.5 text-teal-400" />
+                HTMLファイルを指定・アップロード
+              </button>
+
               <button
                 type="button"
                 onClick={handleLoadSample}
-                className="text-xs bg-slate-900/90 hover:bg-slate-800 text-teal-300 px-3.5 py-1.5 rounded-xl border border-teal-500/30 transition-all flex items-center gap-1.5 shadow-sm"
+                className="text-xs bg-slate-900/90 hover:bg-slate-800 text-slate-300 px-3.5 py-1.5 rounded-xl border border-slate-700 transition-all flex items-center gap-1.5"
               >
-                <History className="w-3.5 h-3.5 text-teal-400" />
-                サンプルログ読み込み
+                <History className="w-3.5 h-3.5 text-purple-400" />
+                サンプルログ
               </button>
-              {inputText && (
+
+              {(inputText || fileName) && (
                 <button
                   type="button"
                   onClick={handleClear}
@@ -135,12 +206,43 @@ export default function Home() {
             </div>
           </div>
 
-          <textarea
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder={`(例)\n[メイン] 山田　太郎 : CCB<=80 【こぶし】 (1D100<=80) ＞ 37 ＞ 成功\n[メイン] 田中　花子 : CCB<=60 【目星】 (1D100<=60) ＞ 96 ＞ 致命的失敗\n\nなどのログテキストをコピー＆ペーストしてください`}
-            className="w-full h-44 bg-slate-950/80 border border-purple-500/20 rounded-2xl p-4 text-slate-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-teal-400/50 focus:border-teal-400/50 transition-all resize-y"
-          />
+          {/* File Drag & Drop Zone / Textarea Container */}
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`relative rounded-2xl transition-all ${
+              isDragging
+                ? 'ring-2 ring-teal-400 bg-teal-950/30 border-teal-400'
+                : ''
+            }`}
+          >
+            {fileName && (
+              <div className="mb-2 px-3 py-1.5 rounded-lg bg-teal-950/40 border border-teal-500/30 text-teal-300 text-xs flex items-center justify-between">
+                <div className="flex items-center gap-2 truncate">
+                  <FileCode className="w-4 h-4 text-teal-400 shrink-0" />
+                  <span className="font-semibold truncate">読み込み中: {fileName}</span>
+                </div>
+                <span className="flex items-center gap-1 text-[11px] text-emerald-400 shrink-0 font-medium">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> 読み込み完了
+                </span>
+              </div>
+            )}
+
+            <textarea
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder={`【HTMLファイルをドラッグ＆ドロップ】または【上のアップロードボタン】を選択してください。\n\n(テキスト直接貼り付けの例)\n[メイン] 山田　太郎 : CCB<=80 【こぶし】 (1D100<=80) ＞ 37 ＞ 成功\n[メイン] 田中　花子 : CCB<=60 【目星】 (1D100<=60) ＞ 96 ＞ 致命的失敗`}
+              className="w-full h-48 bg-slate-950/80 border border-purple-500/20 rounded-2xl p-4 text-slate-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-teal-400/50 focus:border-teal-400/50 transition-all resize-y"
+            />
+
+            {isDragging && (
+              <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm rounded-2xl border-2 border-dashed border-teal-400 flex flex-col items-center justify-center pointer-events-none text-teal-300 space-y-2">
+                <Upload className="w-10 h-10 animate-bounce text-teal-400" />
+                <p className="font-bold text-sm">ここに HTML / ログファイルをドロップしてください</p>
+              </div>
+            )}
+          </div>
 
           <button
             type="button"
