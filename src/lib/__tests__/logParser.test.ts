@@ -10,11 +10,10 @@ import {
 
 describe('logParser Unit Tests', () => {
   describe('cleanHtmlLine', () => {
-    it('HTMLタグとHTMLエンティティを適切にクリーニングすること', () => {
+    it('HTMLエンティティをデコードし、無駄な文字の削りは行わないこと', () => {
       const htmlLine = '<p style="color: #888888;"><span>[メイン]</span> <span>山田　太郎</span> : <span>CCB&lt;=80 (1D100&lt;=80) ＞ 37 ＞ 成功</span></p>';
       const cleaned = cleanHtmlLine(htmlLine);
-      expect(cleaned).toBe('[メイン] 山田　太郎 : CCB<=80 (1D100<=80) ＞ 37 ＞ 成功');
-      expect(cleaned).toContain('[メイン] 山田　太郎 : CCB<=80');
+      expect(cleaned).toBe('<p style="color: #888888;"><span>[メイン]</span> <span>山田　太郎</span> : <span>CCB<=80 (1D100<=80) ＞ 37 ＞ 成功</span></p>');
     });
   });
 

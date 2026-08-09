@@ -26,14 +26,10 @@ export interface AnalyzeResult {
 }
 
 /**
- * HTMLエンティティのデコードおよびHTMLタグの除去
- * 注意: < 記号としての &lt; をタグと誤認しないよう、先にHTMLタグを除去してからデコードする
+ * サニタイズ処理（タグ削除・削り）を行わず、エンティティデコードのみ適用
  */
 export function cleanHtmlLine(rawLine: string): string {
   let cleaned = rawLine;
-  // 1. まずHTMLタグを除去
-  cleaned = cleaned.replace(/<[^>]*>/g, '');
-  // 2. その後、HTMLエンティティをデコード
   cleaned = cleaned
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
@@ -58,43 +54,41 @@ export function parseLogLine(line: string): ParseResult | null {
   // 全角スペースを半角に変換
   const normalized = cleaned.replace(/\u3000/g, ' ');
 
-  // 正規表現パターン 1: [メイン] キャラ名 : コマンド ＞ 出目 ＞ 結果
-  // 例: [メイン] 山田 太郎 : CCB<=80 【目星】 (1D100<=80) ＞ 37 ＞ 成功
-  const matchStandard = normalized.match(/^(?:\[.*?\]\s*)?([^:]+?)\s*:\s*.*?[＞>]\s*(\d+)\s*(?:[＞>]\s*(.*))?$/);
-  if (matchStandard) {
-    const characterName = matchStandard[1].trim();
-    const rollValue = parseInt(matchStandard[2], 10);
-    const resultText = matchStandard[3] ? matchStandard[3].trim() : '';
-    if (!isNaN(rollValue)) {
-      return { characterName, rollValue, resultText };
+  // ダイス結果（ ＞ 出目 ＞ 結果 ）が末尾に含まれるか判定
+  const rollMatch = normalized.match(/[＞>]\s*(\d+)\s*(?:[＞>]\s*(.*))?$/);
+  if (!rollMatch) return null;
+
+  const rollValue = parseInt(rollMatch[1], 10);
+  if (isNaN(rollValue)) return null;
+
+  let resultText = rollMatch[2] ? rollMatch[2].trim() : '';
+  // HTMLタグが末尾に残っている場合は閉じたタグのみ取り除く (例: 成功</p> -> 成功)
+  resultText = resultText.replace(/<\/[^>]+>$/g, '').trim();
+
+  // キャラクター名抽出: ダイス判定 [＞>] よりも左側にあるコロン ':' と名前を特定
+  let characterName = '不明';
+
+  // [メイン] または <span...> などに囲まれたキャラ名とコロンのパターンにマッチ
+  const nameMatch = normalized.match(/(?:\[.*?\]\s*|<[^>]*>)*\s*([^\:<>\n]+?)\s*:\s*.*?[＞>]/);
+  if (nameMatch && nameMatch[1].trim()) {
+    characterName = nameMatch[1].replace(/<[^>]*>/g, '').trim();
+  } else {
+    // フォールバック
+    const tokens = normalized.split(/\s+/).filter(Boolean);
+    if (tokens.length >= 3) {
+      let charName = tokens[0];
+      if (tokens[0].startsWith('[') && tokens[0].endsWith(']') && tokens.length > 1) {
+        charName = tokens[1];
+      }
+      characterName = charName.replace(/<[^>]*>/g, '').trim();
     }
   }
 
-  // 互換フォールバック: 単純なスペース分割処理
-  const tokens = normalized.split(/\s+/).filter(Boolean);
-  if (tokens.length >= 3) {
-    let charName = tokens[0];
-    if (tokens[0].startsWith('[') && tokens[0].endsWith(']') && tokens.length > 1) {
-      charName = tokens[1];
-    }
-    const rollStr = tokens[tokens.length - 2].replace(/\D/g, '');
-    const rollVal = parseInt(rollStr, 10);
-    const resText = tokens[tokens.length - 1];
-
-    if (!isNaN(rollVal)) {
-      return {
-        characterName: charName,
-        rollValue: rollVal,
-        resultText: resText,
-      };
-    }
-  }
-
-  return null;
+  return { characterName: characterName || '不明', rollValue, resultText };
 }
 
 /**
- * ログ全体を分割・パース (HTMLログファイルおよびプレーンテキスト両対応)
+ * ログ全体を分割・パース
  */
 export function logSplit(content: string): ParseResult[] {
   const lines = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
