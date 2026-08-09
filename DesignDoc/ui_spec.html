@@ -73,7 +73,7 @@
       padding-bottom: 0.5rem;
       margin-bottom: 1.25rem;
       display: flex;
-      items-center: center;
+      align-items: center;
       gap: 0.5rem;
     }
 
@@ -125,20 +125,6 @@
       color: var(--text-muted);
     }
 
-    /* Code & Diagram Pre */
-    pre {
-      background-color: #020617;
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      border-radius: 0.75rem;
-      padding: 1.25rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.85rem;
-      color: #38bdf8;
-      overflow-x: auto;
-      margin: 1rem 0;
-      line-height: 1.5;
-    }
-
     /* Table Styling */
     table {
       width: 100%;
@@ -149,18 +135,19 @@
 
     th, td {
       border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 0.75rem 1rem;
+      padding: 0.85rem 1.1rem;
       text-align: left;
+      vertical-align: top;
     }
 
     th {
-      background-color: rgba(45, 212, 191, 0.1);
+      background-color: rgba(45, 212, 191, 0.12);
       color: var(--primary-teal);
       font-weight: 700;
     }
 
     td {
-      background-color: rgba(15, 23, 42, 0.4);
+      background-color: rgba(15, 23, 42, 0.5);
     }
 
     footer {
@@ -225,27 +212,65 @@
     <!-- 2. 画面レイアウト構成 -->
     <section>
       <h2>2. 画面レイアウト構成</h2>
-      <p>アプリケーションはレスポンシブ対応のシングルページ構造 (SPA) です。</p>
+      <p>画面は単一ページ (Single Page Application) で構成され、上部から順に以下の要素がレイアウトされています。</p>
 
-      <pre>
-+-------------------------------------------------------------------+
-|  [Header]  アイコン | ココフォリア Log Analyzer [CoC]   [使い方] [GitHub]  |
-+-------------------------------------------------------------------+
-|  [Intro Banner]  CoC ダイス出目可視化ツール                          |
-|                  タイトル: ココフォリア Log Analyzer [CoC]            |
-+-------------------------------------------------------------------+
-|  [Input Section]                                                  |
-|  - [HTMLファイルを指定・アップロード] [サンプルログ] [クリア] ボタン  |
-|  - ドラッグ＆ドロップ対応 textarea (入力と同時にリアルタイム自動解析)  |
-+-------------------------------------------------------------------+
-|  [Results Section] (リアルタイム自動描画)                         |
-|  - [全体ダイス統計] タブ  |  [探索者別統計 (N名)] タブ             |
-|  - 統計カード (総判定数, クリティカル率, ファンブル率)               |
-|  - 1D100 出目分布 Chart (10区間バーチャート)                       |
-+-------------------------------------------------------------------+
-|  [Footer]  ココフォリア Log Analyzer [CoC] • Next.js & React 19   |
-+-------------------------------------------------------------------+
-      </pre>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 25%;">セクション</th>
+            <th style="width: 35%;">構成要素</th>
+            <th style="width: 40%;">主な役割・表示内容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>ヘッダー<br>(Header)</strong></td>
+            <td>
+              • ブランドアイコン<br>
+              • アプリタイトル (`ココフォリア Log Analyzer [CoC]`)<br>
+              • ナビゲーションリンク (`使い方`, `GitHub`)
+            </td>
+            <td>画面上部に固定配置。ブランド表示および使い方ガイド／GitHubリポジトリへの外部リンクを提供します。</td>
+          </tr>
+          <tr>
+            <td><strong>イントロバナー<br>(Intro Banner)</strong></td>
+            <td>
+              • カテゴリバッジ (`CoC ダイス出目可視化ツール`)<br>
+              • メインキャッチコピー<br>
+              • 機能概要説明文
+            </td>
+            <td>画面上部の案内エリア。アプリケーションの目的（CCB/CCの1D100出目可視化）を簡潔に明示します。</td>
+          </tr>
+          <tr>
+            <td><strong>インプットセクション<br>(Input Section)</strong></td>
+            <td>
+              • `HTMLファイルを指定・アップロード` ボタン<br>
+              • `サンプルログ` ボタン<br>
+              • `クリア` ボタン<br>
+              • ドラッグ＆ドロップ対応テキストエリア
+            </td>
+            <td>ログデータの読み込みエリア。ファイルの参照・ドロップ・貼り付けを行うと同時に**リアルタイム自動解析**が実行されます。</td>
+          </tr>
+          <tr>
+            <td><strong>結果表示セクション<br>(Results Section)</strong></td>
+            <td>
+              • タブ切替 (`全体ダイス統計` / `探索者別統計`)<br>
+              • 抽出判定件数バッジ<br>
+              • 統計カード (`StatCard`)<br>
+              • 1D100 出目分布チャート (`HistogramChart`)
+            </td>
+            <td>解析結果をグラフィカルに可視化。全体および探索者ごとの判定数、クリティカル率・ファンブル率、ヒストグラムを描画します。</td>
+          </tr>
+          <tr>
+            <td><strong>フッター<br>(Footer)</strong></td>
+            <td>
+              • コピーライト表記<br>
+              • 使用技術スタック名 (`Next.js & React 19`)
+            </td>
+            <td>画面最下部に配置されるシンプルなフッター領域。</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
     <!-- 3. 各コンポーネント詳細仕様 -->
@@ -255,9 +280,9 @@
       <table>
         <thead>
           <tr>
-            <th>コンポーネント名</th>
-            <th>役割・機能仕様</th>
-            <th>動作・インタラクション</th>
+            <th style="width: 25%;">コンポーネント名</th>
+            <th style="width: 35%;">役割・機能仕様</th>
+            <th style="width: 40%;">動作・インタラクション</th>
           </tr>
         </thead>
         <tbody>
