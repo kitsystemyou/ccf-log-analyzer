@@ -59,46 +59,25 @@ export function extractSpanTexts(pBlockHtml: string): string[] {
 
 /**
  * HTML <p> ブロックから情報をパースする (HTML形式のみ対応)
- * - pタグ内の <span> 3つ目をキャラクターの発言とし、3つ目に対してダイスロール判定を行う
- * - 1つ目または2つ目の <span> からキャラクター名を特定する
+ * - pタグ内の <span> 3つ目をキャラクターの発言とし、CCB/CC を含む場合のみダイスロール判定を行う (1D100, 1d100 は対象外)
  */
 export function parseLogBlock(pBlockHtml: string): ParseResult | null {
   const spanTexts = extractSpanTexts(pBlockHtml);
 
-  // <span> が少なくとも1つ以上必要
-  if (spanTexts.length === 0) return null;
+  // <span> が少なくとも3つ以上必要 (チャンネル, キャラ名, 発言)
+  if (spanTexts.length < 3) return null;
 
-  let characterName = '不明';
-  let speechText = '';
+  // <span> 3つ目がキャラクターの発言
+  const speechText = spanTexts[2];
 
-  if (spanTexts.length >= 3) {
-    // <span> 3つ目が発言
-    speechText = spanTexts[2];
+  // CCB / ccb / CC / cc を含む場合のみ対象とする (1D100, 1d100 は含めない)
+  const hasCcKeyword = /(?:CCB|ccb|CC|cc)/i.test(speechText);
+  if (!hasCcKeyword) return null;
 
-    // 1つ目の <span> が [メイン] や [other] などのチャンネル名の場合、2つ目をキャラ名とする
-    const firstSpan = spanTexts[0].replace(/:$/, '').trim();
-    const secondSpan = spanTexts[1].replace(/:$/, '').trim();
-
-    if (/^\[.*?\]$/.test(firstSpan)) {
-      characterName = secondSpan || firstSpan;
-    } else {
-      characterName = firstSpan || secondSpan;
-    }
-  } else if (spanTexts.length === 2) {
-    characterName = spanTexts[0].replace(/:$/, '').trim();
-    speechText = spanTexts[1];
-  } else {
-    speechText = spanTexts[0];
-  }
-
-  // チャンネルブラケット [...] や末尾のコロン ':' を除去
-  characterName = characterName.replace(/^\[.*?\]\s*/, '').replace(/:$/, '').trim();
-
-  // 発言テキスト (3つ目の span) に対してダイスロール判定を行う
   // 全角スペースを半角に変換し、改行・複数連続空白を1つの半角スペースに統一
   const normalizedSpeech = speechText.replace(/\u3000/g, ' ').replace(/\s+/g, ' ');
 
-  // ダイス結果 (例: ＞ 30 や ＞ 37 ＞ 成功 や (1D100) ＞ 15)
+  // ダイス結果 (例: ＞ 37 ＞ 成功 や (1D100<=80) ＞ 15)
   const rollMatch = normalizedSpeech.match(/[＞>]\s*(\d+)\s*(?:[＞>]\s*(.*))?$/);
   if (!rollMatch) return null;
 
@@ -106,6 +85,19 @@ export function parseLogBlock(pBlockHtml: string): ParseResult | null {
   if (isNaN(rollValue)) return null;
 
   const resultText = rollMatch[2] ? rollMatch[2].trim() : '';
+
+  // キャラクター名の特定 (1つ目または2つ目の span)
+  let characterName = '不明';
+  const firstSpan = spanTexts[0].replace(/:$/, '').trim();
+  const secondSpan = spanTexts[1].replace(/:$/, '').trim();
+
+  if (/^\[.*?\]$/.test(firstSpan)) {
+    characterName = secondSpan || firstSpan;
+  } else {
+    characterName = firstSpan || secondSpan;
+  }
+
+  characterName = characterName.replace(/^\[.*?\]\s*/, '').replace(/:$/, '').trim();
 
   return {
     characterName: characterName || '不明',

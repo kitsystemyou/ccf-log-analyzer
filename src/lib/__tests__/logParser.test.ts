@@ -8,7 +8,7 @@ import {
   analyzeLog,
 } from '../logParser';
 
-describe('logParser Unit Tests (HTML Format Only)', () => {
+describe('logParser Unit Tests (CCB/CC Commands Only)', () => {
   describe('cleanHtmlEntities', () => {
     it('HTMLエンティティを正常にデコードすること', () => {
       const htmlLine = '<p style="color: #888888;"><span>[メイン]</span> <span>山田 太郎</span> : <span>CCB&lt;=80 (1D100&lt;=80) ＞ 37 ＞ 成功</span></p>';
@@ -18,7 +18,7 @@ describe('logParser Unit Tests (HTML Format Only)', () => {
   });
 
   describe('parseLogBlock', () => {
-    it('3つ目の span を発言として評価し、標準ココフォリア HTML ログをパースすること', () => {
+    it('3つ目の span に CCB コマンドが含まれている場合のみダイス判定を行うこと', () => {
       const block = '<p style="color: #888888;"><span>[メイン]</span> <span>山田 太郎</span> : <span>CCB<=80 【こぶし】 (1D100<=80) ＞ 37 ＞ 成功</span></p>';
       const result = parseLogBlock(block);
       expect(result).not.toBeNull();
@@ -27,42 +27,25 @@ describe('logParser Unit Tests (HTML Format Only)', () => {
       expect(result?.resultText).toBe('成功');
     });
 
-    it('提示された改行入り HTML ココフォリアログの 3つ目の span (小鳥遊 美桜, 柘本 湊, 茅埜 芭怜) から判定すること', () => {
-      const block1 = `<p style="color:#fef4f4;">
+    it('3つ目の span に CC コマンドが含まれている場合にも判定を行うこと', () => {
+      const block = '<p style="color: #888888;"><span>[メイン]</span> <span>探索者A</span> : <span>cc<=(15*5) 【目星】 (1D100<=75) ＞ 42 ＞ 成功</span></p>';
+      const result = parseLogBlock(block);
+      expect(result).not.toBeNull();
+      expect(result?.characterName).toBe('探索者A');
+      expect(result?.rollValue).toBe(42);
+      expect(result?.resultText).toBe('成功');
+    });
+
+    it('3つ目の span が 1D100 や 1d100 のみの場合はダイス対象外 (null) になること', () => {
+      const block = `<p style="color:#fef4f4;">
   <span> [other]</span>
   <span> 小鳥遊 美桜</span> :
   <span>
     1D100  (1D100) ＞ 30
   </span>
 </p>`;
-      const res1 = parseLogBlock(block1);
-      expect(res1).not.toBeNull();
-      expect(res1?.characterName).toBe('小鳥遊 美桜');
-      expect(res1?.rollValue).toBe(30);
-
-      const block2 = `<p style="color:#40ba8d;">
-  <span> [other]</span>
-  <span>柘本 湊</span> :
-  <span>
-    1d100 (1D100) ＞ 13
-  </span>
-</p>`;
-      const res2 = parseLogBlock(block2);
-      expect(res2).not.toBeNull();
-      expect(res2?.characterName).toBe('柘本 湊');
-      expect(res2?.rollValue).toBe(13);
-
-      const block3 = `<p style="color:#2b6442;">
-  <span> [other]</span>
-  <span>茅埜 芭怜</span> :
-  <span>
-    1d100 (1D100) ＞ 5
-  </span>
-</p>`;
-      const res3 = parseLogBlock(block3);
-      expect(res3).not.toBeNull();
-      expect(res3?.characterName).toBe('茅埜 芭怜');
-      expect(res3?.rollValue).toBe(5);
+      const result = parseLogBlock(block);
+      expect(result).toBeNull();
     });
 
     it('クリティカル（決定的成功）ログの 3つ目の span から正しく判定すること', () => {
@@ -91,42 +74,39 @@ describe('logParser Unit Tests (HTML Format Only)', () => {
   });
 
   describe('logSplit', () => {
-    it('複数 <p> ブロックの HTML ログ全体を正確にパースすること', () => {
+    it('CCB/CC コマンドのみを抽出し、1D100 のみは除外して正しく解析すること', () => {
       const multilineHtmlLog = `
 <p style="color:#fef4f4;">
-  <span> [other]</span>
-  <span> 小鳥遊 美桜</span> :
+  <span> [main]</span>
+  <span> 山田 太郎</span> :
   <span>
-    1D100  (1D100) ＞ 30
+    CCB<=80 (1D100<=80) ＞ 30 ＞ 成功
   </span>
 </p>
 
 <p style="color:#40ba8d;">
   <span> [other]</span>
-  <span>柘本 湊</span> :
+  <span> 柘本 湊</span> :
   <span>
     1d100 (1D100) ＞ 13
   </span>
 </p>
 
 <p style="color:#2b6442;">
-  <span> [other]</span>
-  <span>茅埜 芭怜</span> :
+  <span> [main]</span>
+  <span> 茅埜 芭怜</span> :
   <span>
-    1d100 (1D100) ＞ 5
+    CC<=50 (1D100<=50) ＞ 5 ＞ 決定的成功
   </span>
 </p>
       `;
       const results = logSplit(multilineHtmlLog);
-      expect(results.length).toBe(3);
-      expect(results[0].characterName).toBe('小鳥遊 美桜');
+      expect(results.length).toBe(2);
+      expect(results[0].characterName).toBe('山田 太郎');
       expect(results[0].rollValue).toBe(30);
 
-      expect(results[1].characterName).toBe('柘本 湊');
-      expect(results[1].rollValue).toBe(13);
-
-      expect(results[2].characterName).toBe('茅埜 芭怜');
-      expect(results[2].rollValue).toBe(5);
+      expect(results[1].characterName).toBe('茅埜 芭怜');
+      expect(results[1].rollValue).toBe(5);
     });
   });
 
