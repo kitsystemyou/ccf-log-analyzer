@@ -7,7 +7,6 @@ import { StatCard } from '@/components/StatCard';
 import {
   Dice5,
   Play,
-  FileText,
   Users,
   BarChart2,
   Github,
@@ -22,14 +21,45 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 
-const SAMPLE_LOG = `[メイン] 山田　太郎 : CCB<=80 【こぶし（パンチ）】 (1D100<=80) ＞ 37 ＞ 成功
-[メイン] 田中　花子 : CCB<=60 【目星】 (1D100<=60) ＞ 96 ＞ 致命的失敗
-[メイン] 佐藤　一郎 : CCB<=70 【SANチェック】 (1D100<=70) ＞ 1 ＞ 決定的成功
-[メイン] 山田　太郎 : CCB<=50 【回避】 (1D100<=50) ＞ 42 ＞ 成功
-[メイン] 田中　花子 : CCB<=75 【図書館】 (1D100<=75) ＞ 12 ＞ 成功
-[メイン] 佐藤　一郎 : CCB<=65 【心理学】 (1D100<=65) ＞ 88 ＞ 失敗
-[メイン] 山田　太郎 : CCB<=90 【オカルト】 (1D100<=90) ＞ 5 ＞ 決定的成功
-[メイン] 田中　花子 : CCB<=50 【キック】 (1D100<=50) ＞ 99 ＞ 致命的失敗`;
+const SAMPLE_LOG = `<p style="color:#fef4f4;">
+  <span> [main]</span>
+  <span> 山田 太郎</span> :
+  <span>
+    CCB<=80 【こぶし】 (1D100<=80) ＞ 37 ＞ 成功
+  </span>
+</p>
+
+<p style="color:#40ba8d;">
+  <span> [main]</span>
+  <span> 田中 花子</span> :
+  <span>
+    CCB<=60 【目星】 (1D100<=60) ＞ 96 ＞ 致命的失敗
+  </span>
+</p>
+
+<p style="color:#fef4f4;">
+  <span> [other]</span>
+  <span> 小鳥遊 美桜</span> :
+  <span>
+    1D100  (1D100) ＞ 30
+  </span>
+</p>
+
+<p style="color:#40ba8d;">
+  <span> [other]</span>
+  <span> 柘本 湊</span> :
+  <span>
+    1d100 (1D100) ＞ 13
+  </span>
+</p>
+
+<p style="color:#2b6442;">
+  <span> [other]</span>
+  <span> 茅埜 芭怜</span> :
+  <span>
+    1d100 (1D100) ＞ 5
+  </span>
+</p>`;
 
 export default function Home() {
   const [inputText, setInputText] = useState('');
@@ -51,7 +81,7 @@ export default function Home() {
 
   const handleLoadSample = () => {
     setInputText(SAMPLE_LOG);
-    setFileName('sample_log.txt');
+    setFileName('sample_cocofolia_log.html');
     const res = analyzeLog(SAMPLE_LOG);
     setResult(res);
   };
@@ -109,7 +139,7 @@ export default function Home() {
       <input
         type="file"
         ref={fileInputRef}
-        accept=".html,.htm,.txt"
+        accept=".html,.htm"
         onChange={handleFileChange}
         className="hidden"
       />
@@ -125,7 +155,7 @@ export default function Home() {
               <h1 className="text-xl font-black gradient-title tracking-wide">
                 ココフォリア Log Analyzer <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-950/60 text-teal-300 font-bold border border-purple-500/40">CoC Mythos</span>
               </h1>
-              <p className="text-xs text-slate-400">クトゥルフ神話TRPG 運命のダイス出目解析</p>
+              <p className="text-xs text-slate-400">クトゥルフ神話TRPG 運命のダイス出目解析 (HTML形式対応)</p>
             </div>
           </div>
           <div className="flex items-center gap-5 text-xs font-semibold text-slate-300">
@@ -161,7 +191,7 @@ export default function Home() {
             狂気と幸運のダイス出目を可視化
           </h2>
           <p className="text-slate-400 text-sm leading-relaxed">
-            ココフォリアのチャットログ（HTMLファイルまたはテキスト）をアップロード・ペーストすることで、1D100 / CCB判定の出目分布、決定的成功（クリティカル）、致命的失敗（ファンブル）のパーセンテージを深海エルドリッチグラフィックで視覚化します。
+            ココフォリアから出力されたチャットログ（HTMLファイル）をアップロードまたは貼り付けることで、出目分布、決定的成功（クリティカル）、致命的失敗（ファンブル）を深海エルドリッチグラフィックで視覚化します。
           </p>
         </section>
 
@@ -170,7 +200,7 @@ export default function Home() {
           <div className="flex items-center justify-between flex-wrap gap-2">
             <label className="text-sm font-bold text-slate-200 flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-teal-400" />
-              ココフォリアログ（.html ファイルまたはテキスト）
+              ココフォリアログ（HTMLファイル内容または .html アプリ出力）
             </label>
 
             <div className="flex items-center gap-2 flex-wrap">
@@ -232,14 +262,14 @@ export default function Home() {
             <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder={`【HTMLファイルをドラッグ＆ドロップ】または【上のアップロードボタン】を選択してください。\n\n(テキスト直接貼り付けの例)\n[メイン] 山田　太郎 : CCB<=80 【こぶし】 (1D100<=80) ＞ 37 ＞ 成功\n[メイン] 田中　花子 : CCB<=60 【目星】 (1D100<=60) ＞ 96 ＞ 致命的失敗`}
+              placeholder={`【HTMLファイルをドラッグ＆ドロップ】または【上のアップロードボタン】を選択してください。\n\n(HTMLログ形式の例)\n<p style="color:#fef4f4;">\n  <span> [main]</span>\n  <span> 山田 太郎</span> :\n  <span> CCB<=80 (1D100<=80) ＞ 37 ＞ 成功 </span>\n</p>`}
               className="w-full h-48 bg-slate-950/80 border border-purple-500/20 rounded-2xl p-4 text-slate-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-teal-400/50 focus:border-teal-400/50 transition-all resize-y"
             />
 
             {isDragging && (
               <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm rounded-2xl border-2 border-dashed border-teal-400 flex flex-col items-center justify-center pointer-events-none text-teal-300 space-y-2">
                 <Upload className="w-10 h-10 animate-bounce text-teal-400" />
-                <p className="font-bold text-sm">ここに HTML / ログファイルをドロップしてください</p>
+                <p className="font-bold text-sm">ここに HTML ログファイルをドロップしてください</p>
               </div>
             )}
           </div>

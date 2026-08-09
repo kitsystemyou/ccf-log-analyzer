@@ -26,91 +26,110 @@ export interface AnalyzeResult {
 }
 
 /**
- * サニタイズ処理（文字列削り）を行わず、表示用エンティティデコードのみ適用
+ * HTMLエンティティのデコード
  */
-export function cleanHtmlLine(rawLine: string): string {
-  let cleaned = rawLine;
-  cleaned = cleaned
+export function cleanHtmlEntities(rawText: string): string {
+  return rawText
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, ' ');
-  return cleaned.trim();
+    .replace(/&nbsp;/g, ' ')
+    .trim();
 }
 
 /**
- * ココフォリアログの行またはHTMLブロックから情報を抽出する
+ * <p> タグブロック内から <span> テキスト配列を抽出する
  */
-export function parseLogLine(line: string): ParseResult | null {
-  const cleaned = cleanHtmlLine(line);
-  if (!cleaned) return null;
+export function extractSpanTexts(pBlockHtml: string): string[] {
+  const decoded = cleanHtmlEntities(pBlockHtml);
+  const spanRegex = /<span>([\s\S]*?)<\/span>/gi;
+  const spanTexts: string[] = [];
+  let match: RegExpExecArray | null;
 
-  // 全角スペースを半角に変換し、改行や複数連続空白を1つの半角スペースに統合
-  const normalized = cleaned
-    .replace(/\r\n/g, ' ')
-    .replace(/\r/g, ' ')
-    .replace(/\n/g, ' ')
-    .replace(/\u3000/g, ' ')
-    .replace(/\s+/g, ' ');
+  while ((match = spanRegex.exec(decoded)) !== null) {
+    // 内部のネストされたHTMLタグを除去してトリム
+    const textContent = match[1].replace(/<[^>]*>/g, '').trim();
+    spanTexts.push(textContent);
+  }
 
-  // 1D100, 1d100, CCB, ccb, CC, cc, RESB, resb などのダイスコマンド判定
-  const diceSearch = normalized.search(/(?:1D100|1d100|\b\d+D\d+\b|CCB|ccb|CC|cc|RESB|resb)/i);
-  if (diceSearch === -1) return null;
+  return spanTexts;
+}
 
-  // ダイス結果（ ＞ 出目 ＞ 結果 または ＞ 出目 ）が末尾に含まれるか判定
-  const rollMatch = normalized.match(/[＞>]\s*(\d+)\s*(?:[＞>]\s*(.*?))?(?:<\/p>|<[^>]*>|\s)*$/i);
+/**
+ * HTML <p> ブロックから情報をパースする (HTML形式のみ対応)
+ * - pタグ内の <span> 3つ目をキャラクターの発言とし、3つ目に対してダイスロール判定を行う
+ * - 1つ目または2つ目の <span> からキャラクター名を特定する
+ */
+export function parseLogBlock(pBlockHtml: string): ParseResult | null {
+  const spanTexts = extractSpanTexts(pBlockHtml);
+
+  // <span> が少なくとも1つ以上必要
+  if (spanTexts.length === 0) return null;
+
+  let characterName = '不明';
+  let speechText = '';
+
+  if (spanTexts.length >= 3) {
+    // <span> 3つ目が発言
+    speechText = spanTexts[2];
+
+    // 1つ目の <span> が [メイン] や [other] などのチャンネル名の場合、2つ目をキャラ名とする
+    const firstSpan = spanTexts[0].replace(/:$/, '').trim();
+    const secondSpan = spanTexts[1].replace(/:$/, '').trim();
+
+    if (/^\[.*?\]$/.test(firstSpan)) {
+      characterName = secondSpan || firstSpan;
+    } else {
+      characterName = firstSpan || secondSpan;
+    }
+  } else if (spanTexts.length === 2) {
+    characterName = spanTexts[0].replace(/:$/, '').trim();
+    speechText = spanTexts[1];
+  } else {
+    speechText = spanTexts[0];
+  }
+
+  // チャンネルブラケット [...] や末尾のコロン ':' を除去
+  characterName = characterName.replace(/^\[.*?\]\s*/, '').replace(/:$/, '').trim();
+
+  // 発言テキスト (3つ目の span) に対してダイスロール判定を行う
+  // 全角スペースを半角に変換し、改行・複数連続空白を1つの半角スペースに統一
+  const normalizedSpeech = speechText.replace(/\u3000/g, ' ').replace(/\s+/g, ' ');
+
+  // ダイス結果 (例: ＞ 30 や ＞ 37 ＞ 成功 や (1D100) ＞ 15)
+  const rollMatch = normalizedSpeech.match(/[＞>]\s*(\d+)\s*(?:[＞>]\s*(.*))?$/);
   if (!rollMatch) return null;
 
   const rollValue = parseInt(rollMatch[1], 10);
   if (isNaN(rollValue)) return null;
 
-  let resultText = rollMatch[2] ? rollMatch[2].trim() : '';
-  // HTMLタグが末尾に残っている場合は閉じたタグを取り除く
-  resultText = resultText.replace(/<\/[^>]+>$/g, '').replace(/<[^>]*>/g, '').trim();
+  const resultText = rollMatch[2] ? rollMatch[2].trim() : '';
 
-  // キャラクター名の抽出:
-  // ダイスコマンド (1D100/1d100/CCB/ccb/CC/cc/RESB/resb) より前の領域からコロン ':' の前にある名前を正確に特定
-  let characterName = '不明';
-  const beforeDice = normalized.substring(0, diceSearch);
-  const lastColonIndex = beforeDice.lastIndexOf(':');
-  const namePart = lastColonIndex !== -1 ? beforeDice.substring(0, lastColonIndex) : beforeDice;
-
-  // HTMLタグ <...> および チャンネル表記 [...] を除去して純粋なキャラ名を取得
-  const strippedName = namePart.replace(/<[^>]*>/g, '').replace(/\[.*?\]/g, '').trim();
-  if (strippedName) {
-    characterName = strippedName;
-  }
-
-  return { characterName: characterName || '不明', rollValue, resultText };
+  return {
+    characterName: characterName || '不明',
+    rollValue,
+    resultText,
+  };
 }
 
 /**
- * ログ全体をブロック分割 (<p>...</p> タグがある場合はその単位、無ければ改行分割)
+ * ログ全体をHTML <p>...</p> ブロックに分割してパース
  */
-export function extractLogBlocks(content: string): string[] {
-  // <p[\s\S]*?<\/p> パターンがあるか確認
+export function logSplit(content: string): ParseResult[] {
+  // HTML <p ...> ... </p> タグブロックを抽出 (HTML形式のみ対応)
   const pTagRegex = /<p[\s\S]*?<\/p>/gi;
   const pMatches = content.match(pTagRegex);
 
-  if (pMatches && pMatches.length > 0) {
-    return pMatches;
+  if (!pMatches || pMatches.length === 0) {
+    return [];
   }
 
-  // <p> タグが無い平文ログの場合は改行分割
-  return content.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
-}
-
-/**
- * ログ全体を分割・パース
- */
-export function logSplit(content: string): ParseResult[] {
-  const blocks = extractLogBlocks(content);
   const results: ParseResult[] = [];
 
-  for (const block of blocks) {
-    const parsed = parseLogLine(block);
+  for (const block of pMatches) {
+    const parsed = parseLogBlock(block);
     if (parsed) {
       results.push(parsed);
     }

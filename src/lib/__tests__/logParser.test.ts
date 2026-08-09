@@ -1,91 +1,97 @@
 import { describe, it, expect } from 'vitest';
 import {
-  cleanHtmlLine,
-  parseLogLine,
+  cleanHtmlEntities,
+  parseLogBlock,
   logSplit,
   makeHistogram,
   calculateCriticalFumble,
   analyzeLog,
 } from '../logParser';
 
-describe('logParser Unit Tests', () => {
-  describe('cleanHtmlLine', () => {
-    it('HTMLエンティティをデコードし、無駄な文字の削りは行わないこと', () => {
-      const htmlLine = '<p style="color: #888888;"><span>[メイン]</span> <span>山田　太郎</span> : <span>CCB&lt;=80 (1D100&lt;=80) ＞ 37 ＞ 成功</span></p>';
-      const cleaned = cleanHtmlLine(htmlLine);
-      expect(cleaned).toBe('<p style="color: #888888;"><span>[メイン]</span> <span>山田　太郎</span> : <span>CCB<=80 (1D100<=80) ＞ 37 ＞ 成功</span></p>');
+describe('logParser Unit Tests (HTML Format Only)', () => {
+  describe('cleanHtmlEntities', () => {
+    it('HTMLエンティティを正常にデコードすること', () => {
+      const htmlLine = '<p style="color: #888888;"><span>[メイン]</span> <span>山田 太郎</span> : <span>CCB&lt;=80 (1D100&lt;=80) ＞ 37 ＞ 成功</span></p>';
+      const cleaned = cleanHtmlEntities(htmlLine);
+      expect(cleaned).toContain('CCB<=80 (1D100<=80) ＞ 37 ＞ 成功');
     });
   });
 
-  describe('parseLogLine', () => {
-    it('正常なココフォリア標準ログを正しくパースすること', () => {
-      const line = '[メイン] 山田　太郎 : CCB<=80 【こぶし（パンチ）】 (1D100<=80) ＞ 37 ＞ 成功';
-      const result = parseLogLine(line);
+  describe('parseLogBlock', () => {
+    it('3つ目の span を発言として評価し、標準ココフォリア HTML ログをパースすること', () => {
+      const block = '<p style="color: #888888;"><span>[メイン]</span> <span>山田 太郎</span> : <span>CCB<=80 【こぶし】 (1D100<=80) ＞ 37 ＞ 成功</span></p>';
+      const result = parseLogBlock(block);
       expect(result).not.toBeNull();
       expect(result?.characterName).toBe('山田 太郎');
       expect(result?.rollValue).toBe(37);
       expect(result?.resultText).toBe('成功');
     });
 
-    it('計算式付きダイスコマンド CCB<=(15*5) のログでキャラクター名を正確に判定すること', () => {
-      const line = '[メイン] 探索者A : CCB<=(15*5) 【目星】 (1D100<=75) ＞ 42 ＞ 成功';
-      const result = parseLogLine(line);
-      expect(result).not.toBeNull();
-      expect(result?.characterName).toBe('探索者A');
-      expect(result?.rollValue).toBe(42);
-      expect(result?.resultText).toBe('成功');
-    });
-
-    it('改行入り HTML ココフォリアログの要素からキャラクター名と出目を正確に判定すること', () => {
-      const block = `<p style="color:#fef4f4;">
+    it('提示された改行入り HTML ココフォリアログの 3つ目の span (小鳥遊 美桜, 柘本 湊, 茅埜 芭怜) から判定すること', () => {
+      const block1 = `<p style="color:#fef4f4;">
   <span> [other]</span>
   <span> 小鳥遊 美桜</span> :
   <span>
     1D100  (1D100) ＞ 30
   </span>
 </p>`;
-      const result = parseLogLine(block);
-      expect(result).not.toBeNull();
-      expect(result?.characterName).toBe('小鳥遊 美桜');
-      expect(result?.rollValue).toBe(30);
+      const res1 = parseLogBlock(block1);
+      expect(res1).not.toBeNull();
+      expect(res1?.characterName).toBe('小鳥遊 美桜');
+      expect(res1?.rollValue).toBe(30);
+
+      const block2 = `<p style="color:#40ba8d;">
+  <span> [other]</span>
+  <span>柘本 湊</span> :
+  <span>
+    1d100 (1D100) ＞ 13
+  </span>
+</p>`;
+      const res2 = parseLogBlock(block2);
+      expect(res2).not.toBeNull();
+      expect(res2?.characterName).toBe('柘本 湊');
+      expect(res2?.rollValue).toBe(13);
+
+      const block3 = `<p style="color:#2b6442;">
+  <span> [other]</span>
+  <span>茅埜 芭怜</span> :
+  <span>
+    1d100 (1D100) ＞ 5
+  </span>
+</p>`;
+      const res3 = parseLogBlock(block3);
+      expect(res3).not.toBeNull();
+      expect(res3?.characterName).toBe('茅埜 芭怜');
+      expect(res3?.rollValue).toBe(5);
     });
 
-    it('HTMLタグを含んだココフォリアHTMLログ行を正しくパースすること', () => {
-      const htmlLine = '<p style="color: #888888;">[メイン] 田中花子 : ccb&lt;=60 (1D100&lt;=60) ＞ 1 ＞ 決定的成功</p>';
-      const result = parseLogLine(htmlLine);
+    it('クリティカル（決定的成功）ログの 3つ目の span から正しく判定すること', () => {
+      const block = '<p style="color: #888888;"><span>[メイン]</span> <span>田中花子</span> : <span>ccb<=60 (1D100<=60) ＞ 1 ＞ 決定的成功</span></p>';
+      const result = parseLogBlock(block);
       expect(result).not.toBeNull();
       expect(result?.characterName).toBe('田中花子');
       expect(result?.rollValue).toBe(1);
       expect(result?.resultText).toBe('決定的成功');
     });
 
-    it('クリティカル（決定的成功）ログを正しくパースすること', () => {
-      const line = '[メイン] 田中花子 : ccb<=60 (1D100<=60) ＞ 1 ＞ 決定的成功';
-      const result = parseLogLine(line);
-      expect(result).not.toBeNull();
-      expect(result?.characterName).toBe('田中花子');
-      expect(result?.rollValue).toBe(1);
-      expect(result?.resultText).toBe('決定的成功');
-    });
-
-    it('ファンブル（致命的失敗）ログを正しくパースすること', () => {
-      const line = '[雑談] 佐藤 : CC<=50 (1D100<=50) ＞ 98 ＞ 致命的失敗';
-      const result = parseLogLine(line);
+    it('ファンブル（致命的失敗）ログの 3つ目の span から正しく判定すること', () => {
+      const block = '<p style="color: #888888;"><span>[雑談]</span> <span>佐藤</span> : <span>CC<=50 (1D100<=50) ＞ 98 ＞ 致命的失敗</span></p>';
+      const result = parseLogBlock(block);
       expect(result).not.toBeNull();
       expect(result?.characterName).toBe('佐藤');
       expect(result?.rollValue).toBe(98);
       expect(result?.resultText).toBe('致命的失敗');
     });
 
-    it('ダイスロール以外のチャット行は null になること', () => {
-      const line = '[メイン] 山田　太郎 : こんにちは！よろしくお願いします。';
-      const result = parseLogLine(line);
+    it('ダイスロール結果が含まれない通常の発言 span の場合は null になること', () => {
+      const block = '<p style="color: #888888;"><span>[メイン]</span> <span>山田 太郎</span> : <span>こんにちは！よろしくお願いします。</span></p>';
+      const result = parseLogBlock(block);
       expect(result).toBeNull();
     });
   });
 
   describe('logSplit', () => {
-    it('改行区切りの複数行 HTML ココフォリアログを完全にパースして各探索者の出目を抽出すること', () => {
+    it('複数 <p> ブロックの HTML ログ全体を正確にパースすること', () => {
       const multilineHtmlLog = `
 <p style="color:#fef4f4;">
   <span> [other]</span>
@@ -122,39 +128,6 @@ describe('logParser Unit Tests', () => {
       expect(results[2].characterName).toBe('茅埜 芭怜');
       expect(results[2].rollValue).toBe(5);
     });
-
-    it('複数行のログからCCBコマンドのみ抽出しパースすること', () => {
-      const sampleLog = `
-[メイン] 山田　太郎 : よろしくお願いします
-[メイン] 山田　太郎 : CCB<=80 【こぶし】 (1D100<=80) ＞ 37 ＞ 成功
-[メイン] 田中　花子 : CCB<=60 【目星】 (1D100<=60) ＞ 96 ＞ 致命的失敗
-[雑談] 雑談ログです
-      `;
-      const results = logSplit(sampleLog);
-      expect(results.length).toBe(2);
-      expect(results[0].characterName).toBe('山田 太郎');
-      expect(results[0].rollValue).toBe(37);
-      expect(results[1].characterName).toBe('田中 花子');
-      expect(results[1].rollValue).toBe(96);
-    });
-
-    it('HTMLファイル形式のココフォリアログ文字列を正しくパースすること', () => {
-      const sampleHtmlLog = `
-<!DOCTYPE html>
-<html>
-<body>
-<p style="color: #888888;">[メイン] プレイヤーA : CCB&lt;=80 (1D100&lt;=80) ＞ 15 ＞ 成功</p>
-<p style="color: #888888;">[メイン] プレイヤーB : CCB&lt;=(20*4) (1D100&lt;=80) ＞ 99 ＞ 致命的失敗</p>
-</body>
-</html>
-      `;
-      const results = logSplit(sampleHtmlLog);
-      expect(results.length).toBe(2);
-      expect(results[0].characterName).toBe('プレイヤーA');
-      expect(results[0].rollValue).toBe(15);
-      expect(results[1].characterName).toBe('プレイヤーB');
-      expect(results[1].rollValue).toBe(99);
-    });
   });
 
   describe('makeHistogram', () => {
@@ -189,13 +162,13 @@ describe('logParser Unit Tests', () => {
   });
 
   describe('analyzeLog', () => {
-    it('ログ全体およびユーザー別集計が完全な構造で返されること', () => {
-      const sampleLog = `
-[メイン] プレイヤー1 : CCB<=80 (1D100<=80) ＞ 5 ＞ 決定的成功
-[メイン] プレイヤー2 : CCB<=70 (1D100<=70) ＞ 95 ＞ 致命的失敗
-[メイン] プレイヤー1 : CCB<=50 (1D100<=50) ＞ 42 ＞ 成功
+    it('HTMLログ全体およびユーザー別集計が完全な構造で返されること', () => {
+      const sampleHtmlLog = `
+<p style="color: #888888;"><span>[メイン]</span> <span>プレイヤー1</span> : <span>CCB<=80 (1D100<=80) ＞ 5 ＞ 決定的成功</span></p>
+<p style="color: #888888;"><span>[メイン]</span> <span>プレイヤー2</span> : <span>CCB<=70 (1D100<=70) ＞ 95 ＞ 致命的失敗</span></p>
+<p style="color: #888888;"><span>[メイン]</span> <span>プレイヤー1</span> : <span>CCB<=50 (1D100<=50) ＞ 42 ＞ 成功</span></p>
       `;
-      const analyzed = analyzeLog(sampleLog);
+      const analyzed = analyzeLog(sampleHtmlLog);
       expect(analyzed.rawCount).toBe(3);
       expect(analyzed.overallStats.total).toBe(3);
       expect(analyzed.overallStats.critical).toBe(1);
