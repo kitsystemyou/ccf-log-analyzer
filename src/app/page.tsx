@@ -39,7 +39,7 @@ const SAMPLE_LOG = `<p style="color:#fef4f4;">
 
 <p style="color:#fef4f4;">
   <span> [other]</span>
-  <span> 小鳥遊 小鳥</span> :
+  <span> 小鳥遊 美桜</span> :
   <span>
     CCB<=70 【聞き耳】 (1D100<=70) ＞ 1 ＞ 決定的成功
   </span>
@@ -153,9 +153,9 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-xl font-black gradient-title tracking-wide">
-                ココフォリア Log Analyzer <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-950/60 text-teal-300 font-bold border border-purple-500/40">CoC Mythos</span>
+                ココフォリア Log Analyzer <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-950/60 text-teal-300 font-bold border border-purple-500/40">CoC</span>
               </h1>
-              <p className="text-xs text-slate-400">クトゥルフ神話TRPG 運命のダイス出目解析 (HTML形式対応)</p>
+              <p className="text-xs text-slate-400">クトゥルフ神話TRPG ダイス出目解析ツール</p>
             </div>
           </div>
           <div className="flex items-center gap-5 text-xs font-semibold text-slate-300">
@@ -185,13 +185,13 @@ export default function Home() {
         <section className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-950/40 border border-purple-500/30 text-purple-300 text-xs font-medium mb-1">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            深淵なるダイスの女神の啓示
+            CoC ダイス出目可視化ツール
           </div>
           <h2 className="text-2xl md:text-3xl font-black tracking-tight text-slate-100">
-            狂気と幸運のダイス出目を可視化
+            ココフォリア Log Analyzer [CoC]
           </h2>
           <p className="text-slate-400 text-sm leading-relaxed">
-            ココフォリアから出力されたチャットログ（HTMLファイル）をアップロードまたは貼り付けることで、出目分布、決定的成功（クリティカル）、致命的失敗（ファンブル）を深海エルドリッチグラフィックで視覚化します。
+            ココフォリアから出力されたチャットログ（HTMLファイル）をアップロードまたは貼り付けることで、CCB/CCで出された 1D100 の出目分布、決定的成功（クリティカル）、致命的失敗（ファンブル）を視覚化します。
           </p>
         </section>
 
@@ -280,7 +280,7 @@ export default function Home() {
             className="w-full py-4 bg-gradient-to-r from-teal-400 via-purple-600 to-rose-600 hover:from-teal-300 hover:via-purple-500 hover:to-rose-500 text-slate-950 font-black rounded-2xl shadow-xl shadow-teal-500/10 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2 text-base tracking-wider"
           >
             <Play className="w-5 h-5 fill-slate-950" />
-            👁️ 運 命 の 解 析 を 開 始 👁️
+            🌟 解 析 を 開 始 🌟
           </button>
         </section>
 
@@ -328,7 +328,7 @@ export default function Home() {
                 <div className="glass-panel rounded-3xl p-6 border border-teal-500/20 shadow-2xl">
                   <h3 className="text-lg font-extrabold text-slate-100 mb-2 flex items-center gap-2">
                     <span className="w-3 h-3 rounded-full bg-teal-400 animate-ping"></span>
-                    全探索者の出目分布スペクトル (1D100)
+                    全探索者の出目分布 (1D100)
                   </h3>
                   <HistogramChart data={result.overallHist} title="" themeVariant="overall" />
                 </div>
@@ -369,7 +369,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-slate-900/80 bg-slate-950/90 py-6 text-center text-xs text-slate-500">
-        <p>ココフォリア Log Analyzer [CoC Mythos Edition] • Next.js & React 19</p>
+        <p>ココフォリア Log Analyzer [CoC] • Next.js & React 19</p>
       </footer>
     </div>
   );
