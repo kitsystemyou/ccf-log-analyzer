@@ -24,7 +24,7 @@
         </tr>
         <tr>
             <td>不要なパッケージの削除</td>
-            <td>未使用のパッケージ（<code>material</code> 等）や、推移的依存関係（<code>click</code>, <code>Jinja2</code>, <code>Werkzeug</code>, <code>Pygments</code> 等）を <code>requirements.txt</code> および <code>Pipfile</code> から直接削除し、メインの依存ライブラリ（<code>Flask</code>, <code>pandas</code>, <code>matplotlib</code>, <code>numpy</code>, <code>mkdocs</code>, <code>mkdocs-material</code>, <code>fontawesome-markdown</code>, <code>pymdown-extensions</code>）のみを記載しました。</td>
+            <td>未使用のパッケージや推移的依存関係を削除し、メインの依存ライブラリのみを記載しました。また、パッケージ管理ツールを pipenv から <strong>uv</strong> に移行するため、<code>Pipfile</code> を廃止し、標準的な <code>pyproject.toml</code> を作成しました。（なお、App Engine へのデプロイ用に <code>requirements.txt</code> は残しております。）</td>
             <td>不要なパッケージや間接的な依存関係をリストから除外することで、Python 3.14環境構築時に最新版が自動解決されやすくなり、依存関係の競合や不要なエラーを防ぐためです。</td>
         </tr>
         <tr>
@@ -47,9 +47,9 @@
             <td>現在指定されている <code>v2</code> アクションは古く、Node.js 12の非推奨警告が出ます。また、最新バージョンのPython (3.14) を正常にセットアップするためには、アクション自体のアップデートも不可欠です。</td>
         </tr>
         <tr>
-            <td>Pipfile.lock</td>
-            <td><code>pipenv lock</code> による再生成</td>
-            <td>Python 3.14で利用可能な依存関係ツリーに更新し、新しいハッシュ値とバージョンを記録するためです。</td>
+            <td>パッケージ管理 (Pipfile等)</td>
+            <td><code>Pipfile</code> と <code>Pipfile.lock</code> を削除し、<code>pyproject.toml</code> へ移行</td>
+            <td>高速で最新のパッケージ管理ツールである <code>uv</code> を用いることで、Python環境のセットアップや依存関係の解決をより速く、安全に行うためです。</td>
         </tr>
     </table>
 </body>

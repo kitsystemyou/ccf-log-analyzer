@@ -1,0 +1,21 @@
+[project]
+name = "ccf-log-analyzer"
+version = "0.1.0"
+description = "ココフォリア Log Analyzer"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "flask",
+    "pandas",
+    "matplotlib",
+    "numpy",
+    "mkdocs",
+    "mkdocs-material",
+    "fontawesome-markdown",
+    "pymdown-extensions"
+]
+
+[tool.uv]
+dev-dependencies = [
+    "autopep8"
+]
