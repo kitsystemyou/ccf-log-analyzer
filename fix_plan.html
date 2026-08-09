@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Python 3.14 バージョンアップに伴う修正計画</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; margin: 20px; }
+        h1, h2 { color: #333; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Python 3.14 バージョンアップに伴う修正計画</h1>
+    <p>Python 3.8 / 3.9系から3.14へのバージョンアップに伴い、現状のコードや依存ライブラリにおいて以下の修正が必要となります。</p>
+    
+    <h2>1. 依存ライブラリ (requirements.txt / Pipfile) の更新</h2>
+    <table>
+        <tr>
+            <th>対象パッケージ</th>
+            <th>修正内容</th>
+            <th>原因・理由</th>
+        </tr>
+        <tr>
+            <td>Flask, Werkzeug, Jinja2</td>
+            <td>最新のメジャーバージョン（Flask 3.x系, Werkzeug 3.x系など）へのアップデート</td>
+            <td>Werkzeug 2.0.1 等の古いバージョンは、Python 3.10で削除された <code>collections.Mapping</code> などを参照しているため、Python 3.14環境ではインポートエラーとなり動作しません。</td>
+        </tr>
+        <tr>
+            <td>numpy, pandas, matplotlib</td>
+            <td>Python 3.14 をサポートする最新バージョンへのアップデート</td>
+            <td>C言語などのネイティブ拡張を含むライブラリであるため、Python 3.14用の最新のビルド（Wheel）パッケージを利用しないとインストールが失敗する可能性が高いです。</td>
+        </tr>
+        <tr>
+            <td>その他 (mkdocs 等)</td>
+            <td>必要に応じた最新版へのアップデート</td>
+            <td>Python 3.13 / 3.14で完全に削除された標準ライブラリ（cgi, distutils, imp等）に依存している古いパッケージは動作しなくなるためです。</td>
+        </tr>
+    </table>
+
+    <h2>2. CI/CD および設定ファイルの修正</h2>
+    <table>
+        <tr>
+            <th>対象ファイル</th>
+            <th>修正内容</th>
+            <th>原因・理由</th>
+        </tr>
+        <tr>
+            <td>.github/workflows/main.yml</td>
+            <td><code>actions/checkout@v4</code> および <code>actions/setup-python@v5</code> 等、最新のGitHub Actionsへのアップデート</td>
+            <td>現在指定されている <code>v2</code> アクションは古く、Node.js 12の非推奨警告が出ます。また、最新バージョンのPython (3.14) を正常にセットアップするためには、アクション自体のアップデートも不可欠です。</td>
+        </tr>
+        <tr>
+            <td>Pipfile.lock</td>
+            <td><code>pipenv lock</code> による再生成</td>
+            <td>Python 3.14で利用可能な依存関係ツリーに更新し、新しいハッシュ値とバージョンを記録するためです。</td>
+        </tr>
+    </table>
+</body>
+</html>

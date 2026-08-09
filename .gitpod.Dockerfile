@@ -1,3 +1,3 @@
-FROM python:3.8.7
+FROM python:3.14
 RUN apt update -y && apt upgrade -y
 

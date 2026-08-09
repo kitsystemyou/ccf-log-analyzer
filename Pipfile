@@ -40,6 +40,6 @@ werkzeug = "==2.0.1"
 zipp = "==3.6.0"
 
 [requires]
-python_version = "3.8"
+python_version = "3.14"
 
 [dev-packages]
