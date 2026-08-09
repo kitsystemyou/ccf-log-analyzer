@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>画面仕様書 (UI/UX Specification) - ココフォリア Log Analyzer [CoC]</title>
+  <style>
+    :root {
+      --bg-dark: #040711;
+      --panel-bg: rgba(15, 23, 42, 0.75);
+      --panel-border: rgba(45, 212, 191, 0.25);
+      --primary-teal: #2dd4bf;
+      --secondary-purple: #a855f7;
+      --crimson-red: #f43f5e;
+      --gold-accent: #fbbf24;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary-teal), var(--secondary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    section {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 1rem;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      color: var(--primary-teal);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      items-center: center;
+      gap: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      color: var(--secondary-purple);
+      margin: 1.25rem 0 0.5rem 0;
+    }
+
+    p, li {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+
+    ul {
+      list-style-type: square;
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    /* Color Palette Grid */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .color-card {
+      border-radius: 0.75rem;
+      padding: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+
+    .color-box {
+      height: 48px;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .color-card code {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Code & Diagram Pre */
+    pre {
+      background-color: #020617;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.85rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      margin: 1rem 0;
+      line-height: 1.5;
+    }
+
+    /* Table Styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: rgba(45, 212, 191, 0.1);
+      color: var(--primary-teal);
+      font-weight: 700;
+    }
+
+    td {
+      background-color: rgba(15, 23, 42, 0.4);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-top: 3rem;
+      border-top: 1px solid var(--panel-border);
+      padding-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>画面仕様書 (UI/UX Specification)</h1>
+      <p>ココフォリア Log Analyzer [CoC] • クトゥルフ神話 TRPG ダイス出目解析ツール</p>
+    </header>
+
+    <!-- 1. デザインテーマ＆コンセプト -->
+    <section>
+      <h2>1. デザインテーマ＆コンセプト</h2>
+      <p>本アプリケーションは「クトゥルフ神話 (CoC Mythos Theme)」をモチーフとした、深海エルドリッチの神秘的かつ洗練されたダークUIで構築されています。</p>
+
+      <h3>1.1 カラーパレット (CoC Mythos Color Palette)</h3>
+      <div class="color-grid">
+        <div class="color-card">
+          <div class="color-box" style="background-color: #040711;"></div>
+          <strong>Eldritch Void</strong><br>
+          <code>#040711 (背景)</code>
+        </div>
+        <div class="color-card">
+          <div class="color-box" style="background-color: #2dd4bf;"></div>
+          <strong>Deep Sea Teal</strong><br>
+          <code>#2dd4bf (プライマリ)</code>
+        </div>
+        <div class="color-card">
+          <div class="color-box" style="background-color: #a855f7;"></div>
+          <strong>Tentacle Purple</strong><br>
+          <code>#a855f7 (セカンダリ)</code>
+        </div>
+        <div class="color-card">
+          <div class="color-box" style="background-color: #f43f5e;"></div>
+          <strong>Blood Crimson</strong><br>
+          <code>#f43f5e (ファンブル)</code>
+        </div>
+        <div class="color-card">
+          <div class="color-box" style="background-color: #fbbf24;"></div>
+          <strong>Eldritch Gold</strong><br>
+          <code>#fbbf24 (ハイライト)</code>
+        </div>
+      </div>
+
+      <h3>1.2 視覚効果 (Visual Effects)</h3>
+      <ul>
+        <li><strong>Glassmorphism</strong>: 透過ガラス風パネル (Backdrop blur, 1px 境界線発光)</li>
+        <li><strong>Dynamic Micro-animations</strong>: ドラッグ＆ドロップ領域の発光アニメーション、パルサーランプ、タブ切替時のフェードイン効果</li>
+      </ul>
+    </section>
+
+    <!-- 2. 画面レイアウト構成 -->
+    <section>
+      <h2>2. 画面レイアウト構成</h2>
+      <p>アプリケーションはレスポンシブ対応のシングルページ構造 (SPA) です。</p>
+
+      <pre>
++-------------------------------------------------------------------+
+|  [Header]  アイコン | ココフォリア Log Analyzer [CoC]   [使い方] [GitHub]  |
++-------------------------------------------------------------------+
+|  [Intro Banner]  CoC ダイス出目可視化ツール                          |
+|                  タイトル: ココフォリア Log Analyzer [CoC]            |
++-------------------------------------------------------------------+
+|  [Input Section]                                                  |
+|  - [HTMLファイルを指定・アップロード] [サンプルログ] [クリア] ボタン  |
+|  - ドラッグ＆ドロップ対応 textarea (入力と同時にリアルタイム自動解析)  |
++-------------------------------------------------------------------+
+|  [Results Section] (リアルタイム自動描画)                         |
+|  - [全体ダイス統計] タブ  |  [探索者別統計 (N名)] タブ             |
+|  - 統計カード (総判定数, クリティカル率, ファンブル率)               |
+|  - 1D100 出目分布 Chart (10区間バーチャート)                       |
++-------------------------------------------------------------------+
+|  [Footer]  ココフォリア Log Analyzer [CoC] • Next.js & React 19   |
++-------------------------------------------------------------------+
+      </pre>
+    </section>
+
+    <!-- 3. 各コンポーネント詳細仕様 -->
+    <section>
+      <h2>3. 各コンポーネント詳細仕様</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>コンポーネント名</th>
+            <th>役割・機能仕様</th>
+            <th>動作・インタラクション</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Header</strong></td>
+            <td>ブランド表示および関連リンクの提供</td>
+            <td>「使い方」「GitHub」への外部リンク（別タブでオープン）</td>
+          </tr>
+          <tr>
+            <td><strong>Upload Button</strong></td>
+            <td>ローカルHTMLファイルの指定読み込み</td>
+            <td>クリックでファイルダイアログ表示。指定された `.html` を即座に読み込んで自動解析。</td>
+          </tr>
+          <tr>
+            <td><strong>Sample Log Button</strong></td>
+            <td>動作確認用のデモログ読み込み</td>
+            <td>「市　太郎」「須磨　ゐる」等を含むサンプルHTMLログをセットし即座に解析。</td>
+          </tr>
+          <tr>
+            <td><strong>Textarea & Dropzone</strong></td>
+            <td>ログHTMLの貼り付け・ドロップ領域</td>
+            <td>ドラッグ時に枠線がエメラルド発光。テキスト入力・ペーストと同時にリアルタイム自動解析。</td>
+          </tr>
+          <tr>
+            <td><strong>Tabs (Overall/Users)</strong></td>
+            <td>全体統計と探索者別統計の表示切り替え</td>
+            <td>全体統計タブと探索者（ユーザー）別統計タブをスムーズに切り替え。</td>
+          </tr>
+          <tr>
+            <td><strong>StatCard</strong></td>
+            <td>総判定数、クリティカル・ファンブル率表示</td>
+            <td>判定総数、決定的成功（％）、致命的失敗（％）をハイコントラストカードで表示。</td>
+          </tr>
+          <tr>
+            <td><strong>HistogramChart</strong></td>
+            <td>1D100出目分布スペクトルの描画</td>
+            <td>Chart.js による 10区間 (`1~10`〜`91~100`) のバーチャート可視化。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer>
+      <p>DesignDoc - ココフォリア Log Analyzer [CoC] • UI Specification Document</p>
+    </footer>
+  </div>
+
+</body>
+</html>
