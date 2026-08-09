@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.vscode
+Dockerfile
+README.md
+log_parse
+templates
+static
+Doc
+Pipfile*
+app.yaml
+main.py
+requirements.txt
