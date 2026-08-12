@@ -21,7 +21,7 @@ def log_split(content) -> list:
     results = []  # [[キャラ名, 出目, 成功失敗]]
     for c in content:
         if exits_ccb(c):
-            pattern = '.*?(\d+).*'  # 数字抽出用
+            pattern = r'.*?(\d+).*'  # 数字抽出用
             matched = re.match(pattern, c[-1])
             if matched != None:  # 開発バージョンのココフォリアのフォーマットの場合
                 # TODO: クリファン判定できるようにする
@@ -52,7 +52,7 @@ def make_histogram(results) -> list:
             continue
     nplist = np.array(intdata)
     hist_data, _ = np.histogram(nplist, bins=10, range=(1, 100))
-    return list(hist_data)
+    return hist_data.tolist()
 
 
 def critical_fumble(results) -> dict:

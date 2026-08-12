@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Python 3.14 バージョンアップに伴う修正計画</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; margin: 20px; }
+        h1, h2 { color: #333; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Python 3.14 バージョンアップに伴う修正計画</h1>
+    <p>Python 3.8 / 3.9系から3.14へのバージョンアップに伴い、現状のコードや依存ライブラリにおいて以下の修正が必要となります。</p>
+    
+    <h2>1. 依存ライブラリ (requirements.txt / Pipfile) の更新</h2>
+    <table>
+        <tr>
+            <th>対象パッケージ</th>
+            <th>修正内容</th>
+            <th>原因・理由</th>
+        </tr>
+        <tr>
+            <td>不要なパッケージの削除</td>
+            <td>未使用のパッケージや推移的依存関係を削除し、メインの依存ライブラリのみを記載しました。また、パッケージ管理ツールを pipenv から <strong>uv</strong> に移行するため、<code>Pipfile</code> を廃止し、標準的な <code>pyproject.toml</code> を作成しました。（なお、App Engine へのデプロイ用に <code>requirements.txt</code> は残しております。）</td>
+            <td>不要なパッケージや間接的な依存関係をリストから除外することで、Python 3.14環境構築時に最新版が自動解決されやすくなり、依存関係の競合や不要なエラーを防ぐためです。</td>
+        </tr>
+        <tr>
+            <td>Flask, pandas, matplotlib, numpy 等のメインパッケージ</td>
+            <td>Python 3.14 をサポートする最新バージョンがインストールされるようにバージョン指定を解除</td>
+            <td>古いバージョンのままでは Python 3.14 で削除されたモジュールや変更された内部APIにより動作しない、またはビルドに失敗するためです。</td>
+        </tr>
+    </table>
+
+    <h2>2. CI/CD および設定ファイルの修正</h2>
+    <table>
+        <tr>
+            <th>対象ファイル</th>
+            <th>修正内容</th>
+            <th>原因・理由</th>
+        </tr>
+        <tr>
+            <td>.github/workflows/main.yml</td>
+            <td><code>actions/checkout@v4</code> および <code>actions/setup-python@v5</code> 等、最新のGitHub Actionsへのアップデート</td>
+            <td>現在指定されている <code>v2</code> アクションは古く、Node.js 12の非推奨警告が出ます。また、最新バージョンのPython (3.14) を正常にセットアップするためには、アクション自体のアップデートも不可欠です。</td>
+        </tr>
+        <tr>
+            <td>パッケージ管理 (Pipfile等)</td>
+            <td><code>Pipfile</code> と <code>Pipfile.lock</code> を削除し、<code>pyproject.toml</code> へ移行</td>
+            <td>高速で最新のパッケージ管理ツールである <code>uv</code> を用いることで、Python環境のセットアップや依存関係の解決をより速く、安全に行うためです。</td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gae_python38_app]
+# [START gae_python314_app]
 # [START gae_python3_app]
 from flask import Flask, render_template, request, send_from_directory
 from log_parse import parse, parse_by_users
@@ -77,4 +77,4 @@ def users_post():
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
 # [END gae_python3_app]
-# [END gae_python38_app]
+# [END gae_python314_app]
