@@ -12,10 +12,10 @@ dependencies = [
     "mkdocs",
     "mkdocs-material",
     "fontawesome-markdown",
-    "pymdown-extensions"
+    "pymdown-extensions",
 ]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "autopep8"
 ]

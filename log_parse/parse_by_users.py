@@ -1,6 +1,5 @@
 from re import A
 import re
-from numpy.lib.shape_base import apply_along_axis
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -53,7 +52,7 @@ def make_histogram(results):
             continue
     nplist = np.array(intdata)
     hist_data, _ = np.histogram(nplist, bins=10, range=(1,100))
-    return list(hist_data)
+    return hist_data.tolist()
 
 
 def log_analyze(content):
