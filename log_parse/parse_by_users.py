@@ -1,9 +1,5 @@
-from re import A
 import re
-import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
-import json
 
 
 def log_split(content):
