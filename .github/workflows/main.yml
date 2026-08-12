@@ -1,21 +1,38 @@
+name: Deploy MkDocs to GitHub Pages
+
 on:
   push:
     branches:
       - main
+
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
         with:
-          python-version: '3.8.7'
-      - run: pip install -r requirements.txt
-      - run: cd ./Doc && mkdocs build
-      
-      # push builded files for gh-pages branch 
-      - uses: peaceiris/actions-gh-pages@v3
+          enable-cache: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          personal_token: ${{ secrets.PERSONAL_TOKEN }}
+          python-version: '3.14'
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Build MkDocs
+        run: cd ./Doc && uv run mkdocs build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./Doc/site

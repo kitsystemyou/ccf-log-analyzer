@@ -9,7 +9,8 @@ copyright: 'Copyright (c) 2021'
 
 # Documentation and theme
 docs_dir: 'docs'
-theme: 'material'
+theme:
+  name: 'material'
 
 # Options
 extra:
@@ -29,18 +30,17 @@ extra:
 # Extensions
 markdown_extensions:
   - codehilite:
-        noclasses: true
-        pygments_style: colorful
-        linenums: true
+      noclasses: true
+      pygments_style: colorful
+      linenums: true
   - pymdownx.tilde
   - admonition
-  - fontawesome_markdown
 
 extra_css:
   - "https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css"
 
-# pages
-pages:
+# Navigation
+nav:
   - トップページ: 'index.md'
   - 使い方 ✨: 'usage.md'
   - 更新履歴: 'update_log.md'
