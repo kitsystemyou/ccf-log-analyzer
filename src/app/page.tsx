@@ -196,7 +196,7 @@ export default function Home() {
           <div className="flex items-center justify-between flex-wrap gap-2">
             <label className="text-sm font-bold text-slate-200 flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-teal-400" />
-              ココフォリアのチャットログ（HTMLファイル内容または .html アプリ出力）
+              ココフォリアのチャットログ（HTMLファイルの内容）
             </label>
 
             <div className="flex items-center gap-2 flex-wrap">
