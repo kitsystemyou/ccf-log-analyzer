@@ -184,10 +184,10 @@ export default function Home() {
             CoC ダイス出目可視化ツール
           </div>
           <h2 className="text-2xl md:text-3xl font-black tracking-tight text-slate-100">
-            ココフォリア Log Analyzer [CoC]
+            ダイスの女神のご機嫌
           </h2>
           <p className="text-slate-400 text-sm leading-relaxed">
-            ココフォリアから出力されたチャットログ（HTMLファイル）をアップロードまたは貼り付けることで、CCB/CCで出された 1D100 の出目分布、決定的成功（クリティカル）、致命的失敗（ファンブル）を視覚化します。
+            ココフォリアから出力されたチャットログ（HTMLファイル）を選択・または貼り付けることで、CCB/CCで振られた 1D100 の出目分布、決定的成功（クリティカル）率、致命的失敗（ファンブル）率を分析します。
           </p>
         </section>
 
@@ -196,7 +196,7 @@ export default function Home() {
           <div className="flex items-center justify-between flex-wrap gap-2">
             <label className="text-sm font-bold text-slate-200 flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-teal-400" />
-              ココフォリアログ（HTMLファイル内容または .html アプリ出力）
+              ココフォリアのチャットログ（HTMLファイル内容または .html アプリ出力）
             </label>
 
             <div className="flex items-center gap-2 flex-wrap">
@@ -207,7 +207,7 @@ export default function Home() {
                 className="text-xs bg-gradient-to-r from-teal-500/20 to-purple-500/20 hover:from-teal-500/30 hover:to-purple-500/30 text-teal-300 px-3.5 py-1.5 rounded-xl border border-teal-400/40 transition-all flex items-center gap-1.5 font-bold shadow-md shadow-teal-500/10"
               >
                 <Upload className="w-3.5 h-3.5 text-teal-400" />
-                HTMLファイルを指定・アップロード
+                HTMLファイルを選択
               </button>
 
               <button
@@ -258,7 +258,7 @@ export default function Home() {
             <textarea
               value={inputText}
               onChange={(e) => updateLogData(e.target.value)}
-              placeholder={`【HTMLファイルをドラッグ＆ドロップ】または【上のアップロードボタン】を選択してください。\n\n(HTMLログ形式の例)\n<p style="color:#fef4f4;">\n  <span> [main]</span>\n  <span> 山田 太郎</span> :\n  <span> CCB<=80 (1D100<=80) ＞ 37 ＞ 成功 </span>\n</p>`}
+              placeholder={`【HTMLファイルをドラッグ＆ドロップ】するか、【「HTMLファイルを選択」ボタンから選択】してください。\n\n(HTMLログ形式の例)\n<p style="color:#fef4f4;">\n  <span> [main]</span>\n  <span> 山田 太郎</span> :\n  <span> CCB<=80 (1D100<=80) ＞ 37 ＞ 成功 </span>\n</p>`}
               className="w-full h-48 bg-slate-950/80 border border-purple-500/20 rounded-2xl p-4 text-slate-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-teal-400/50 focus:border-teal-400/50 transition-all resize-y"
             />
 
@@ -356,7 +356,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-slate-900/80 bg-slate-950/90 py-6 text-center text-xs text-slate-500">
-        <p>ココフォリア Log Analyzer [CoC] • Next.js & React 19</p>
+        <p>ココフォリア Log Analyzer [CoC]</p>
       </footer>
     </div>
   );
